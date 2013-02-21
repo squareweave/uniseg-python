@@ -67,27 +67,35 @@ install:
 	$(PYTHON) setup.py install --home=$(HOME)
 
 csv/GraphemeClusterBreak.csv: $(DIR_DOWNLOAD)/auxiliary/GraphemeBreakProperty.txt
+	-$(MKDIR) -p $(dir $@)
 	$(PYTHON) tools/prop2csv.py -o $@ $<
 
 csv/GraphemeClusterBreakTest.csv: $(DIR_DOWNLOAD)/auxiliary/GraphemeBreakTest.txt
+	-$(MKDIR) -p $(dir $@)
 	$(PYTHON) tools/test2csv.py -p GB -o $@ $<
 
 csv/WordBreak.csv: $(DIR_DOWNLOAD)/auxiliary/WordBreakProperty.txt
+	-$(MKDIR) -p $(dir $@)
 	$(PYTHON) tools/prop2csv.py -o $@ $<
 
 csv/WordBreakTest.csv: $(DIR_DOWNLOAD)/auxiliary/WordBreakTest.txt
+	-$(MKDIR) -p $(dir $@)
 	$(PYTHON) tools/test2csv.py -p WB -o $@ $<
 
 csv/SentenceBreak.csv: $(DIR_DOWNLOAD)/auxiliary/SentenceBreakProperty.txt
+	-$(MKDIR) -p $(dir $@)
 	$(PYTHON) tools/prop2csv.py -o $@ $^
 
 csv/SentenceBreakTest.csv: $(DIR_DOWNLOAD)/auxiliary/SentenceBreakTest.txt
+	-$(MKDIR) -p $(dir $@)
 	$(PYTHON) tools/test2csv.py -p SB -o $@ $<
 
 csv/LineBreak.csv: $(DIR_DOWNLOAD)/LineBreak.txt
+	-$(MKDIR) -p $(dir $@)
 	$(PYTHON) tools/prop2csv.py -o $@ $^
 
 csv/LineBreakTest.csv: $(DIR_DOWNLOAD)/auxiliary/LineBreakTest.txt
+	-$(MKDIR) -p $(dir $@)
 	$(PYTHON) tools/test2csv.py -p LB -o $@ $<
 
 # Use 'mkdir -p' instead of --create-dirs option of curl because it 
