@@ -29,7 +29,7 @@ def parse_breaking_test_pattern(pattern):
             cp = int(token, 16)
             u = unichr(cp)
             codepoint_list.append(u)
-            codepoint_count += 1
+            codepoint_count += len(u)
     string = ''.join(codepoint_list)
     expect = breakpoint_list
     return string, expect

@@ -1,7 +1,7 @@
 """Unicode grapheme cluster breaking
 
-UAX #29: Unicode Text Segmentation (Revision 15)
-http://www.unicode.org/reports/tr29/tr29-15.html
+UAX #29: Unicode Text Segmentation (Unicode 6.2.0)
+http://www.unicode.org/reports/tr29/tr29-21.html
 """
 
 
@@ -24,13 +24,13 @@ CR = 1
 LF = 2
 Control = 3
 Extend = 4
-Prepend = 5
-SpacingMark = 6
-L = 7
-V = 8
-T = 9
-LV = 10
-LVT = 11
+SpacingMark = 5
+L = 6
+V = 7
+T = 8
+LV = 9
+LVT = 10
+Regional_Indicator = 11
 
 names = [
     'Other',        # 0
@@ -38,31 +38,32 @@ names = [
     'LF',           # 2
     'Control',      # 3
     'Extend',       # 4
-    'Prepend',      # 5
-    'SpacingMark',  # 6
-    'L',            # 7
-    'V',            # 8
-    'T',            # 9
-    'LV',           # 10
-    'LVT',          # 11
+    'SpacingMark',  # 5
+    'L',            # 6
+    'V',            # 7
+    'T',            # 8
+    'LV',           # 9
+    'LVT',          # 10
+    'Regional_Indicator',   # 11
 ]
 
-# cf. http://www.unicode.org/Public/5.2.0/ucd/auxiliary/GraphemeBreakTest.html
+# cf. http://www.unicode.org/Public/6.2.0/ucd/auxiliary/GraphemeBreakTest.html
 # 0: not break, 1: break
 break_table = [
-    [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1],
     [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1],
-    [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0],
-    [1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1],
-    [1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1],
-    [1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1],
-    [1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1],
+    [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1],
+    [1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1],
+    [1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1],
+    [1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1],
+    [1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1],
+    [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0],
 ]
+
 
 def grapheme_cluster_break(c, index=0):
     
@@ -109,14 +110,15 @@ def grapheme_cluster_breakables(s):
     
     prev_gcbi = 0
     i = 0
-    yield 1
     for c in code_points(s):
         gcb = grapheme_cluster_break(c)
         gcbi = names.index(gcb)
         if i > 0:
             breakable = break_table[prev_gcbi][gcbi]
-            for j in range(len(c)):
-                yield int(j==0 and breakable)
+        else:
+            breakable = 1
+        for j in range(len(c)):
+            yield int(j==0 and breakable)
         prev_gcbi = gcbi
         i += len(c)
 

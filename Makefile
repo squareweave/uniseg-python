@@ -9,7 +9,7 @@ CURL = curl
 PYTHON = python
 SQLITE3 = sqlite3
 
-UNICODE_VERSION = 5.2.0
+UNICODE_VERSION = 6.2.0
 URL_DOWNLOAD = http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd
 DIR_DOWNLOAD = data/$(UNICODE_VERSION)
 DIR_SRC = unicodeseg
