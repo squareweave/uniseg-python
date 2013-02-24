@@ -158,8 +158,6 @@ def grapheme_clusters(s, tailor=None):
     
     >>> list(grapheme_clusters(u'\u0ba8\u0bbf'))
     [u'\u0ba8\u0bbf']
-    >>> list(grapheme_clusters(u'\u0e40\u0e01'))
-    [u'\u0e40\u0e01']
     >>> list(grapheme_clusters(u'\u0937\u093f'))
     [u'\u0937\u093f']
     
