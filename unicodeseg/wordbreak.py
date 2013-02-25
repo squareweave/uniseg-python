@@ -1,7 +1,7 @@
 """Unicode word breaking
 
-UAX #29: Unicode Text Segmentation (Revision 15)
-http://www.unicode.org/reports/tr29/tr29-15.html
+UAX #29: Unicode Text Segmentation (Unicode 6.2.0)
+http://www.unicode.org/reports/tr29/tr29-21.html
 """
 
 
@@ -24,6 +24,7 @@ CR = 'CR'
 LF = 'LF'
 Newline = 'Newline'
 Extend = 'Extend'
+Regional_Indicator = 'Regional_Indicator'
 Format = 'Format'
 Katakana = 'Katakana'
 ALetter = 'ALetter'
@@ -55,6 +56,7 @@ break_table_index = [
     MidNumLet,
     Numeric,
     ExtendNumLet,
+    Regional_Indicator,
     Format,
     Extend,
     ALetter_FormatFE,
@@ -68,31 +70,33 @@ break_table_index = [
     Numeric_MidNumLet_FormatFE,
 ]
 
-# cf. http://www.unicode.org/Public/5.2.0/ucd/auxiliary/WordBreakTest.html
+# cf. http://www.unicode.org/Public/6.2.0/ucd/auxiliary/WordBreakTest.html
 break_table = [
-#### 0  1  2  3  4  5  6  7  8  9 10 11 12 ######
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],    #  0: Other
-    [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],    #  1: CR
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],    #  2: LF
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],    #  3: Newline
-    [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0],    #  4: Katakana
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],    #  5: ALetter
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],    #  6: MidLetter
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],    #  7: MidNum
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],    #  8: MidNumLet
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],    #  9: Numeric
-    [1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0],    # 10: ExtendNumLet
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],    # 11: Format_FE
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],    # 12: Extend_FE
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0],    # 13: ALetter Format_FE
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0],    # 14: ALetter MidLetter
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0],    # 15: ALetter MidNumLet
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0],    # 16: ALetter MidNumLet Format_FE
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],    # 17: ALetter MidNum
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],    # 18: Numeric MidLetter
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0],    # 19: Numeric MidNumLet
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0],    # 20: Numeric MidNum
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0],    # 21: Numeric MidNumLet Format_FE
+#### 0  1  2  3  4  5  6  7  8  9 10 11 12 13 ###
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 0 Other
+    [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # 1 CR
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # 2 LF
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # 3 Newline
+    [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0], # 4 Katakana
+    [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0], # 5 ALetter
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 6 MidLetter
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 7 MidNum
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 8 MidNumLet
+    [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0], # 9 Numeric
+    [1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0], # 10 ExtendNumLet
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], # 11 Regional_Indicator
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 12 Format_FE
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 13 Extend_FE
+    # ========================================= #
+    [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0], # 14 ALetter Format_FE
+    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0], # 15 ALetter MidLetter
+    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0], # 16 ALetter MidNumLet
+    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0], # 17 ALetter MidNumLet Format_FE
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 18 ALetter MidNum
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 19 Numeric MidLetter
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0], # 20 Numeric MidNumLet
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0], # 21 Numeric MidNum
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0], # 22 Numeric MidNumLet Format_FE
 ]
 
 
@@ -214,6 +218,9 @@ def word_breakables(s):
               or (prev_wb == ExtendNumLet
                   and wb in ((ALetter, Numeric, Katakana)))
               ):
+            do_break = False
+        # WB13c.
+        elif prev_wb == wb == Regional_Indicator:
             do_break = False
         # WB14.
         else:
