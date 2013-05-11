@@ -71,12 +71,15 @@ PR = 'PR'   # Prefix Numeric
 SY = 'SY'   # Symbols Allowing Break After
 AI = 'AI'   # Ambiguous (Alphabetic or Ideographic)
 AL = 'AL'   # Alphabetic
+CJ = 'CJ'   # Conditional Japanese Starter
 H2 = 'H2'   # Hangul LV Syllable
 H3 = 'H3'   # Hangul LVT Syllable
+HL = 'HL'   # Hebrew Letter
 ID = 'ID'   # Ideographic
 JL = 'JL'   # Hangul L Jamo
 JV = 'JV'   # Hangul V Jamo
 JT = 'JT'   # Hangul T Jamo
+RI = 'RI'   # Regional Indicator
 SA = 'SA'   # Complex Context Dependent (South East Asian)
 XX = 'XX'   # Unknown
 
@@ -292,9 +295,9 @@ def line_break_breakables(s, legacy=False):
     will be the same as ``len(s)``.
     
     >>> list(line_break_breakables('ABC'))
-    [1, 0, 0]
+    [0, 0, 0]
     >>> list(line_break_breakables('Hello, world.'))
-    [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
     >>> list(line_break_breakables(u''))
     []
     """
@@ -319,11 +322,14 @@ def line_break_breakables(s, legacy=False):
             if lb == AI:
                 lb = AL
         
+        if lb == CJ:
+            lb = NS
+
         if lb in (CM, XX, SA):
             lb = AL
         # LB4
         if pos == 0:
-            do_break = True
+            do_break = False
         elif prev_lb == BK:
             do_break = True
         # LB5
@@ -337,11 +343,9 @@ def line_break_breakables(s, legacy=False):
             do_break = False
         # LB8
         elif ((prev_prev_lb == ZW and prev_lb == SP) or (prev_lb == ZW)):
-            #print 'LB8', prev_prev_lb, prev_lb, lb, pos
-            do_break = not (prev_lb == SP and lb in (WJ, SY, IS, EX, CP, CL))
+            do_break = True
         # LB11
         elif lb == WJ or prev_lb == WJ:
-            #print 'LB11', prev_prev_lb, prev_lb, lb, pos
             do_break = False
         # LB12
         elif prev_lb == GL:
@@ -380,17 +384,17 @@ def line_break_breakables(s, legacy=False):
         elif lb in (BA, HY, NS) or prev_lb == BB:
             do_break = False
         # LB22
-        elif prev_lb in (AL, ID, IN, NU) and lb == IN:
+        elif prev_lb in (AL, HL, ID, IN, NU) and lb == IN:
             do_break = False
         # LB23
         elif ((prev_lb == ID and lb == PO)
-              or (prev_lb == AL and lb == NU)
-              or (prev_lb == NU and lb == AL)):
+              or (prev_lb in (AL, HL) and lb == NU)
+              or (prev_lb == NU and lb in (AL, HL))):
             do_break = False
         # LB24
         elif ((prev_lb == PR and lb == ID)
-              or (prev_lb == PR and lb == AL)
-              or (prev_lb == PO and lb == AL)):
+              or (prev_lb == PR and lb in (AL, HL))
+              or (prev_lb == PO and lb in (AL, HL))):
             do_break = False
         # LB25
         elif ((prev_lb == CL and lb == PO)
@@ -418,14 +422,17 @@ def line_break_breakables(s, legacy=False):
               or (prev_lb == PR and lb in (JL, JV, JT, H2, H3))):
             do_break = False
         # LB28
-        elif prev_lb == lb == AL:
+        elif prev_lb in (AL, HL) and lb in (AL, HL):
             do_break = False
         # LB29
-        elif prev_lb == IS and lb == AL:
+        elif prev_lb == IS and lb in (AL, HL):
             do_break = False
         # LB30
-        elif ((prev_lb in (AL, NU) and lb == OP)
-              or (prev_lb == CP and lb in (AL, NU))):
+        elif ((prev_lb in (AL, HL, NU) and lb == OP)
+              or (prev_lb == CP and lb in (AL, HL, NU))):
+            do_break = False
+        # LB30a
+        elif prev_lb == lb == RI:
             do_break = False
         else:
             do_break = True

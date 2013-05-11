@@ -19,8 +19,8 @@ def boundaries(breakables):
     [0, 1, 2, 3]
     >>> list(boundaries([1, 0, 1]))
     [0, 2, 3]
-    >>> list(boundaries([1, 0, 0]))
-    [0, 3]
+    >>> list(boundaries([0, 1, 0]))
+    [1, 3]
     
     It yields empty when the given sequece is empty.
     

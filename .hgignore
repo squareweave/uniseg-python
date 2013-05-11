@@ -3,3 +3,4 @@ csv/**
 data/**
 **.pyc
 .DS_Store
+unicodeseg/ucd.sqlite3
