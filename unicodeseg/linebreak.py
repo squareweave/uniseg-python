@@ -291,8 +291,8 @@ def line_break_breakables(s, legacy=False):
     
     """Iterate line breaking opportunities for every position of `s`
     
-    1 for "break" and 0 for "do not break".  The length of iteration 
-    will be the same as ``len(s)``.
+    1 means "break" and 0 means "do not break" BEFORE the postion.  
+    The length of iteration will be the same as ``len(s)``.
     
     >>> list(line_break_breakables('ABC'))
     [0, 0, 0]

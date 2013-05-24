@@ -22,8 +22,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-__revision__ = '$Rev: 2191 $'
-
 
 import re
 from sys import maxunicode
@@ -36,10 +34,9 @@ __all__ = [
     'code_points'
 ]
 
-is_narrow_build = (maxunicode < 0x10000)
 
-
-if is_narrow_build:
+if maxunicode < 0x10000:
+    
     # narrow unicode build
     
     def ord_impl(c, index):
