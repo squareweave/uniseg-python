@@ -1,4 +1,4 @@
-.PHONY: clean test
+.PHONY: clean test upload
 
 PROJ_NAME = uniseg
 
@@ -55,6 +55,9 @@ cleanall: clean
 
 sdist:
 	$(PYTHON) setup.py sdist -d $(DIR_DIST) --formats=zip
+
+upload:
+	$(PYTHON) setup.py sdist -d $(DIR_DIST) --formats=zip upload
 
 archive:
 	-$(MKDIR) -p $(DIR_DIST)
