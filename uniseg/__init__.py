@@ -7,12 +7,6 @@ from wordbreak import *
 from wrap import *
 
 
-# The version of this module.
-__version__ = '0.6.0'
-
-# The version of the Unicode database used in this module.
-unidata_version = '5.2.0'
-
 __all__ = [
     'ord',
     'unichr',
@@ -38,3 +32,6 @@ __all__ = [
     'TextWrapper',
     'TTWrapper',
 ]
+
+# The version of the Unicode database used in this module.
+unidata_version = '5.2.0'
