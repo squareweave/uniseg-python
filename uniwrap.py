@@ -5,10 +5,8 @@ Masaaki Shibata <mshibata@emptypage.jp>
 http://www.emptypage.jp/
 """
 
-__version__ = '$Rev: 2184 $'
 
-
-from unicodeseg import TTWrapper
+from uniseg import TTWrapper
 
 
 def main():
@@ -74,7 +72,7 @@ def main():
             ruler = rul[:wrap_width]
         else:
             ruler = '-' * wrap_width
-        output(ruler+'\n')
+        print >>fout, ruler
     
     for para in fin:
         para = para.decode(encoding)

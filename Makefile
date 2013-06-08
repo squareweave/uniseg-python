@@ -1,6 +1,6 @@
 .PHONY: clean test
 
-PROJ_NAME = unicodeseg
+PROJ_NAME = uniseg
 
 MKDIR = mkdir
 MV = mv
@@ -12,7 +12,7 @@ SQLITE3 = sqlite3
 UNICODE_VERSION = 6.2.0
 URL_DOWNLOAD = http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd
 DIR_DOWNLOAD = data/$(UNICODE_VERSION)
-DIR_SRC = unicodeseg
+DIR_SRC = uniseg
 DIR_DIST = dist
 UCD_DB = $(DIR_SRC)/ucd.sqlite3
 
@@ -43,7 +43,7 @@ $(UCD_DB): schema.sql $(CSV_FILES)
 
 clean:
 	-$(RM) $(DIR_SRC)/*.pyc
-	-$(RM) $(CSV_FILES)
+	-$(RM) -r csv
 
 cleanall: clean
 	-$(RM) $(UCD_DB)

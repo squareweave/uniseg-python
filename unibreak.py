@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 
-from unicodeseg import (code_points,
-                        grapheme_clusters,
-                        words,
-                        sentences,
-                        line_break_units)
+from uniseg import (code_points,
+                    grapheme_clusters,
+                    words,
+                    sentences,
+                    line_break_units)
 
 
 def main():

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Text wrapping demo on unicodeseg + wxPython
+"""Text wrapping demo on uniseg + wxPython
 """
 
 
@@ -7,7 +7,7 @@ from locale import getpreferredencoding
 
 import wx
 
-import unicodeseg
+import uniseg
 
 
 default_text = u"""The quick (\u201cbrown\u201d) fox \
@@ -52,7 +52,7 @@ conversation?'
 _preferredencoding = getpreferredencoding()
 
 
-class WindowWrapper(unicodeseg.TextWrapper):
+class WindowWrapper(uniseg.TextWrapper):
     
     def __init__(self, dc):
         

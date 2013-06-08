@@ -7,7 +7,10 @@ from wordbreak import *
 from wrap import *
 
 
-__version__ = '0.5.2'
+# The version of this module.
+__version__ = '0.6.0'
+
+# The version of the Unicode database used in this module.
 unidata_version = '5.2.0'
 
 __all__ = [
