@@ -1,3 +1,8 @@
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 from distutils.core import setup
 
 
@@ -7,7 +12,7 @@ setup(
     author = 'Masaaki Shibata',
     author_email = 'mshibata@emptypage.jp',
     url = 'https://bitbucket.org/emptypage/uniseg-python',
-    description = 'A pure Python module to determine Unicode text segmentation',
+    description = 'A pure Python module to determine Unicode text segmentations',
     packages = ['uniseg'],
     package_data = {
         'uniseg': ['ucd.sqlite3'],
@@ -18,6 +23,7 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
         'Topic :: Text Processing',
     ],
 )

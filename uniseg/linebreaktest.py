@@ -1,9 +1,14 @@
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 import doctest
 import unittest
 
-import linebreak
-from db import iter_line_break_tests
-from test import implement_break_tests
+from . import linebreak
+from .db import iter_line_break_tests
+from .test import implement_break_tests
 
 
 skips = [

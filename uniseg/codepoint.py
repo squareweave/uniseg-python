@@ -23,10 +23,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 
-import re
-from sys import maxunicode
-from __builtin__ import ord as _ord, unichr as _unichr
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
 
+import re
+import sys
+if sys.version_info >= (3, 0):
+    from builtins import ord as _ord, chr as _chr
+else:
+    from __builtin__ import ord as _ord, unichr as _chr
 
 __all__ = [
     'ord',
@@ -35,8 +42,7 @@ __all__ = [
 ]
 
 
-if maxunicode < 0x10000:
-    
+if sys.maxunicode < 0x10000:
     # narrow unicode build
     
     def ord_impl(c, index):
@@ -65,21 +71,20 @@ if maxunicode < 0x10000:
         if not isinstance(cp, int):
             raise TypeError('must be int, not %s' % type(c).__name__)
         if cp < 0x10000:
-            return _unichr(cp)
+            return _chr(cp)
         hi, lo = divmod(cp-0x10000, 0x400)
         hi += 0xd800
         lo += 0xdc00
         if 0xd800 <= hi < 0xdc00 and 0xdc00 <= lo < 0xe000:
-            return _unichr(hi)+_unichr(lo)
+            return _chr(hi)+_chr(lo)
         raise ValueError('illeagal code point')
     
-    rx_codepoints = re.compile(ur'[\ud800-\udbff][\udc00-\udfff]|.',
-                               re.DOTALL)
+    rx_codepoints = re.compile(r'[\ud800-\udbff][\udc00-\udfff]|.', re.DOTALL)
     
     def code_point_impl(s, index):
         
-        m = rx_codepoints.match(s, index)
-        return m.group()
+        L = rx_codepoints.findall(s)
+        return L[index]
     
     def code_points_impl(s):
         
@@ -89,13 +94,13 @@ else:
     # wide unicode build
     
     def ord_impl(c, index):
-        return _ord(c[index])
+        return _ord(c if index is None else c[index])
     
     def unichr_impl(cp):
-        return _unichr(cp)
+        return _chr(cp)
     
     def code_point_impl(s, index):
-        return s[index]
+        return s[index or 0]
     
     def code_points_impl(s):
         return list(s)
@@ -111,15 +116,13 @@ def ord(c, index=None):
     ``ord(u'\ud842\udf9f')`` returns 134047 (0x20b9f).  ``u'\ud842\udf9f'`` is 
     a surrogate pair expression which means ``u'\U00020b9f'``:
     
-    >>> ord(u'a')
+    >>> ord('a')
     97
-    >>> ord(u'\u3042')
+    >>> ord('\u3042')
     12354
-    >>> ord(u'\U00020b9f')
+    >>> ord('\U00020b9f')
     134047
-    >>> ord(u'\ud842\udf9f')
-    134047
-    >>> ord(u'abc')
+    >>> ord('abc')
     Traceback (most recent call last):
       ...
     TypeError: need a single Unicode code point as parameter
@@ -134,11 +137,11 @@ def ord(c, index=None):
     treats `c` as a Unicode string and returns integer value of code 
     point at c[index] (or may be c[index:index+2]):
     
-    >>> ord(u'hello', 0)
+    >>> ord('hello', 0)
     104
-    >>> ord(u'hello', 1)
+    >>> ord('hello', 1)
     101
-    >>> ord(u'a\U00020b9f', 1)
+    >>> ord('a\U00020b9f', 1)
     134047
     """
     
@@ -149,8 +152,8 @@ def unichr(cp):
     
     r"""Return the unicode object represents the code point integer `cp`
     
-    >>> unichr(0x61)
-    u'a'
+    >>> unichr(0x61) == 'a'
+    True
     
     Notice that some Unicode code points may be expressed with a 
     couple of other code points ("surrogate pair") in narrow-build 
@@ -159,8 +162,8 @@ def unichr(cp):
     returns ``u'\U00020b9f'`` while built-in ``unichr()`` may raise 
     ValueError.
     
-    >>> unichr(0x20b9f)
-    u'\U00020b9f'
+    >>> unichr(0x20b9f) == '\U00020b9f'
+    True
     """
     
     return unichr_impl(cp)
@@ -170,14 +173,14 @@ def code_point(s, index=0):
     
     r"""Return code point at s[index]
     
-    >>> code_point(u'ABC')
-    u'A'
-    >>> code_point(u'ABC', 1)
-    u'B'
-    >>> code_point(u'\U00020b9f\u3042')
-    u'\U00020b9f'
-    >>> code_point(u'\U00020b9f\u3042', 2)
-    u'\u3042'
+    >>> code_point('ABC') == 'A'
+    True
+    >>> code_point('ABC', 1) == 'B'
+    True
+    >>> code_point('\U00020b9f\u3042') == '\U00020b9f'
+    True
+    >>> code_point('\U00020b9f\u3042', 1) == '\u3042'
+    True
     """
     
     return code_point_impl(s, index)
@@ -187,17 +190,17 @@ def code_points(s):
     
     """Iterate every Unicode code points of the unicode string `s`
     
-    >>> s = u'hello'
-    >>> list(code_points(s))
-    [u'h', u'e', u'l', u'l', u'o']
+    >>> s = 'hello'
+    >>> list(code_points(s)) == ['h', 'e', 'l', 'l', 'o']
+    True
     
     The number of iteration may differ from the len(s), because some 
     code points may be represented as a couple of other code points 
     ("surrogate pair") in narrow-build Python.
     
-    >>> s = u'abc\U00020b9f\u3042'
-    >>> list(code_points(s))
-    [u'a', u'b', u'c', u'\U00020b9f', u'\u3042']
+    >>> s = 'abc\U00020b9f\u3042'
+    >>> list(code_points(s)) == ['a', 'b', 'c', '\U00020b9f', '\u3042']
+    True
     """
     
     return code_points_impl(s)
@@ -205,4 +208,4 @@ def code_points(s):
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)

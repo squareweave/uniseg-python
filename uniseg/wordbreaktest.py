@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 import doctest
 import unittest
 
-import wordbreak
-from db import iter_word_break_tests
-from test import implement_break_tests
+from . import wordbreak
+from .db import iter_word_break_tests
+from .test import implement_break_tests
 
 
 @implement_break_tests(wordbreak.word_boundaries,

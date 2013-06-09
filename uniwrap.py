@@ -6,13 +6,33 @@ http://www.emptypage.jp/
 """
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
+import io
+import sys
+
 from uniseg import TTWrapper
+
+
+def argopen(file, mode, encoding=None, errors=None):
+    
+    closefd = True
+    if file == '-':
+        closefd = False
+        if 'r' in mode:
+            file = sys.stdin.fileno()
+        else:
+            file = sys.stdout.fileno()
+    return io.open(file, mode, encoding=encoding, errors=errors,
+                   closefd=closefd)
 
 
 def main():
     
     import argparse
-    from sys import stdin, stdout, stderr
     from locale import getpreferredencoding
     
     encoding = getpreferredencoding()
@@ -20,7 +40,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-e', '--encoding',
                         default=encoding,
-                        help='file encoding <%(default)s>')
+                        help='file encoding (%(default)s)')
     parser.add_argument('-x', '--expand-tabs',
                         action='store_true',
                         help='expand tabs to spaces')
@@ -33,26 +53,24 @@ def main():
     parser.add_argument('-t', '--tab-width',
                         type=int,
                         default=8,
-                        help='tab width <%(default)d>')
+                        help='tab width (%(default)d)')
     parser.add_argument('-l', '--legacy',
                         action='store_true',
                         help='treat ambiguous-width letters as wide')
     parser.add_argument('-o', '--output',
-                        type=argparse.FileType('w'),
-                        default=stdout,
+                        default='-',
                         help='leave output to specified file')
     parser.add_argument('-w', '--wrap-width',
                         type=int,
                         default=60,
-                        help='wrap width <%(default)s>')
+                        help='wrap width (%(default)s)')
     parser.add_argument('-c', '--char-wrap',
                         action='store_true',
                         help="""wrap on grapheme boundaries instead of 
                         line break boundaries""")
     parser.add_argument('file',
                         nargs='?',
-                        type=argparse.FileType('r'),
-                        default=stdin,
+                        default='-',
                         help='input file')
     args = parser.parse_args()
     
@@ -64,20 +82,19 @@ def main():
     wrapper.wrap_width = wrap_width = args.wrap_width
     wrapper.char_wrap = args.char_wrap
     encoding = args.encoding
-    fin = args.file
-    fout = args.output
+    fin = argopen(args.file, 'r', encoding)
+    fout = argopen(args.output, 'w', encoding)
     if args.ruler:
         if tab_width:
-            rul = ('+' + '-' * (tab_width - 1)) * (wrap_width / tab_width + 1)
+            rul = ('+' + '-' * (tab_width - 1)) * (wrap_width // tab_width + 1)
             ruler = rul[:wrap_width]
         else:
             ruler = '-' * wrap_width
-        print >>fout, ruler
+        print(ruler, file=fout)
     
     for para in fin:
-        para = para.decode(encoding)
         for line in wrapper.wrap(para):
-            print >>fout, line.rstrip('\n').encode(encoding)
+            print(line.rstrip('\n'), file=fout)
 
 
 if __name__ == '__main__':

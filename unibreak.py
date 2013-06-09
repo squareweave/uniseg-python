@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
+import io
+import sys
+
 from uniseg import (code_points,
                     grapheme_clusters,
                     words,
@@ -8,16 +16,28 @@ from uniseg import (code_points,
                     line_break_units)
 
 
+def argopen(file, mode, encoding=None, errors=None):
+    
+    closefd = True
+    if file == '-':
+        closefd = False
+        if 'r' in mode:
+            file = sys.stdin.fileno()
+        else:
+            file = sys.stdout.fileno()
+    return io.open(file, mode, encoding=encoding, errors=errors,
+                   closefd=closefd)
+
+
 def main():
     
     import argparse
     from locale import getpreferredencoding
-    from sys import stdin, stdout, stderr
     
     parser = argparse.ArgumentParser()
     parser.add_argument('-e', '--encoding',
                         default=getpreferredencoding(),
-                        help="""text encoding of the input <%(default)s>""")
+                        help="""text encoding of the input (%(default)s)""")
     parser.add_argument('-l', '--legacy',
                         action='store_true',
                         help="""legacy mode (makes sense only with
@@ -25,23 +45,21 @@ def main():
     parser.add_argument('-m', '--mode',
                         choices=['c', 'g', 'l', 's', 'w'],
                         default='w',
-                        help="""breaking algorithm <%(default)s>
+                        help="""breaking algorithm (%(default)s)
                         (c: code points, g: grapheme clusters,
                         s: sentences l: line breaking units, w: words)""")
     parser.add_argument('-o', '--output',
-                        type=argparse.FileType('w'),
-                        default=stdout,
+                        default='-',
                         help="""leave output to specified file""")
     parser.add_argument('file',
                         nargs='?',
-                        type=argparse.FileType('r'),
-                        default=stdin,
+                        default='-',
                         help="""input text file""")
     args = parser.parse_args()
     
-    fin = args.file
-    fout = args.output
     encoding = args.encoding
+    fin = argopen(args.file, 'r', encoding)
+    fout = argopen(args.output, 'w', encoding)
     _words = {'c': code_points,
               'g': grapheme_clusters,
               'l': lambda x: line_break_units(x, args.legacy),
@@ -49,9 +67,8 @@ def main():
               'w': words,
               }[args.mode]
     for line in fin:
-        line = line.decode(encoding)
         for w in _words(line):
-            print >>fout, w.encode(encoding)
+            print(w, file=fout)
 
 
 if __name__ == '__main__':

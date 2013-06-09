@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 import doctest
 import unittest
 
-import sentencebreak
-from db import iter_sentence_break_tests
-from test import implement_break_tests
+from . import sentencebreak
+from .db import iter_sentence_break_tests
+from .test import implement_break_tests
 
 
 @implement_break_tests(sentencebreak.sentence_boundaries,

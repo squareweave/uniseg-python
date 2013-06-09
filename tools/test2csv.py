@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 import os.path
 import re
 import sys
@@ -74,7 +79,7 @@ def main():
             continue
         name = '%s%04d' % (name_prefix, test_num)
         fields = [name, data, comment]
-        print >>fout, ','.join(csv_escape(x) for x in fields).encode('utf-8')
+        print(','.join(csv_escape(x) for x in fields).encode('utf-8'), file=fout)
         test_num += 1
 
 

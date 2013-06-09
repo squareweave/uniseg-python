@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 import re
 
 
@@ -108,7 +113,7 @@ def main():
         cprange = fields[0]
         for cp in codepoint_range(cprange):
             fields[0] = cp
-            print >>fout, ','.join(csv_escape(x) for x in fields)
+            print(','.join(csv_escape(x) for x in fields), file=fout)
 
 
 if __name__ == '__main__':

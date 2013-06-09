@@ -1,10 +1,15 @@
-from breaking import *
-from codepoint import *
-from graphemecluster import *
-from linebreak import *
-from sentencebreak import *
-from wordbreak import *
-from wrap import *
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
+from .breaking import *
+from .codepoint import *
+from .graphemecluster import *
+from .linebreak import *
+from .sentencebreak import *
+from .wordbreak import *
+from .wrap import *
 
 
 __all__ = [

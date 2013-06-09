@@ -2,6 +2,12 @@
 """
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
+
 __all__ = [
     'boundaries',
     'break_units',
@@ -40,12 +46,12 @@ def break_units(s, breakables):
     
     """Iterate every tokens of `s` basing on breakable table, `breakables`
     
-    >>> list(break_units('ABC', [1, 1, 1]))
-    ['A', 'B', 'C']
-    >>> list(break_units('ABC', [1, 0, 1]))
-    ['AB', 'C']
-    >>> list(break_units('ABC', [1, 0, 0]))
-    ['ABC']
+    >>> list(break_units('ABC', [1, 1, 1])) == ['A', 'B', 'C']
+    True
+    >>> list(break_units('ABC', [1, 0, 1])) == ['AB', 'C']
+    True
+    >>> list(break_units('ABC', [1, 0, 0])) == ['ABC']
+    True
     
     The length of `s` must be equal to that of `breakables`.
     """

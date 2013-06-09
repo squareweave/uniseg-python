@@ -2,11 +2,16 @@
 """
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 from unicodedata import east_asian_width
 
-from codepoint import ord, code_point, code_points
-from graphemecluster import grapheme_clusters, grapheme_cluster_boundaries
-from linebreak import line_break_boundaries
+from .codepoint import ord, code_point, code_points
+from .graphemecluster import grapheme_clusters, grapheme_cluster_boundaries
+from .linebreak import line_break_boundaries
 
 
 __all__ = ['TextWrapper', 'TTWrapper']
@@ -99,7 +104,7 @@ class TTWrapper(TextWrapper):
             if boundary:
                 cp = code_points(s[prev_boundary:boundary])[0]
                 if cp == '\t' and tab_width:
-                    width = (width / tab_width + 1) * tab_width
+                    width = (width // tab_width + 1) * tab_width
                     widths.append(width)
                 else:
                     eaw = east_asian_width(cp)
@@ -107,7 +112,7 @@ class TTWrapper(TextWrapper):
                         width += 2
                     else:
                         width += 1
-                    for __ in xrange(prev_boundary, boundary):
+                    for __ in range(prev_boundary, boundary):
                         widths.append(width)
             prev_boundary = boundary
         return widths
@@ -149,7 +154,7 @@ class TTWrapper(TextWrapper):
         prev_x = 0
         for i, tok in enumerate(tokens):
             if i > 0:
-                x = nspaces * i / (len(tokens)-1)
+                x = nspaces * i // (len(tokens)-1)
                 L.append(' ' * (x - prev_x))
                 prev_x = x
             L.append(tok)
@@ -167,7 +172,7 @@ class TTWrapper(TextWrapper):
             def _line(line):
                 return line
         
-        next = iter(TextWrapper.wrap(self, s)).next
+        next = iter(TextWrapper.wrap(self, s)).__next__
         line = next()
         while 1:
             try:
@@ -209,7 +214,7 @@ class TTWrapHandler(object):
             if boundary:
                 cp = code_points(s[prev_boundary:boundary])[0]
                 if cp == '\t' and tab_width:
-                    width = (width / tab_width + 1) * tab_width
+                    width = (width // tab_width + 1) * tab_width
                     widths.append(width)
                 else:
                     eaw = east_asian_width(cp)
@@ -217,7 +222,7 @@ class TTWrapHandler(object):
                         width += 2
                     else:
                         width += 1
-                    for __ in xrange(prev_boundary, boundary):
+                    for __ in range(prev_boundary, boundary):
                         widths.append(width)
             prev_boundary = boundary
         return widths
@@ -259,7 +264,7 @@ class TTWrapHandler(object):
         prev_x = 0
         for i, tok in enumerate(tokens):
             if i > 0:
-                x = nspaces * i / (len(tokens)-1)
+                x = nspaces * i // (len(tokens)-1)
                 L.append(' ' * (x - prev_x))
                 prev_x = x
             L.append(tok)
@@ -301,20 +306,20 @@ def tt_width(s, index=0, legacy=False):
     Generally, the width of a grapheme cluster is determined by its 
     leading code point.
     
-    >>> tt_width(u'A')
+    >>> tt_width('A')
     1
-    >>> tt_width(u'\u8240')
+    >>> tt_width('\u8240')
     2
-    >>> tt_width(u'\x67\u0308')
+    >>> tt_width('\x67\u0308')
     1
     
     If `legacy` is specified to True, some characters such as greek 
     alphabets are treated as they have fullwidth as well as 
     ideographics does.
     
-    >>> tt_width(u'\u03b1')
+    >>> tt_width('\u03b1')
     1
-    >>> tt_width(u'\u03b1', legacy=True)
+    >>> tt_width('\u03b1', legacy=True)
     2
     """
     
@@ -330,11 +335,11 @@ def tt_text_extents(s, legacy=False):
     """Return a list of logical widths from start of the string to 
     each character on fixed-width typography
     
-    >>> tt_text_extents(u'')
+    >>> tt_text_extents('')
     []
-    >>> tt_text_extents(u'abc')
+    >>> tt_text_extents('abc')
     [1, 2, 3]
-    >>> tt_text_extents(u'\u3042\u3044\u3046')
+    >>> tt_text_extents('\u3042\u3044\u3046')
     [2, 4, 6]
     
     The meaning of `legacy` is the same as that of `tt_width()`.

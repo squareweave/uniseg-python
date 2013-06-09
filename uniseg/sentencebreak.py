@@ -5,9 +5,14 @@ http://www.unicode.org/reports/tr29/tr29-15.html
 """
 
 
-from breaking import boundaries, break_units
-from codepoint import ord, code_point, code_points
-from db import sentence_break as _sentence_break
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
+from .breaking import boundaries, break_units
+from .codepoint import ord, code_point, code_points
+from .db import sentence_break as _sentence_break
 
 
 __all__ = [
@@ -39,19 +44,19 @@ def sentence_break(c, index=0):
     
     `c` must be a single Unicode code point string.
     
-    >>> sentence_break(u'\x0d')
-    'CR'
-    >>> sentence_break(u' ')
-    'Sp'
-    >>> sentence_break(u'a')
-    'Lower'
+    >>> print(sentence_break(u'\x0d'))
+    CR
+    >>> print(sentence_break(u' '))
+    Sp
+    >>> print(sentence_break(u'a'))
+    Lower
     
     If `index` is specified, this function consider `c` as a unicode 
     string and return Sentence_Break property of the code point at 
     c[index].
     
-    >>> sentence_break(u'a\x0d', 1)
-    'CR'
+    >>> print(sentence_break(u'a\x0d', 1))
+    CR
     """
     
     return _sentence_break(code_point(c, index))
@@ -61,16 +66,16 @@ def _preprocess_boundaries(s):
     
     r"""(internal)
     
-    >>> list(_preprocess_boundaries(u'Aa'))
-    [(0, 'Upper'), (1, 'Lower')]
-    >>> list(_preprocess_boundaries(u'A a'))
-    [(0, 'Upper'), (1, 'Sp'), (2, 'Lower')]
-    >>> list(_preprocess_boundaries(u'A" a'))
-    [(0, 'Upper'), (1, 'Close'), (2, 'Sp'), (3, 'Lower')]
-    >>> list(_preprocess_boundaries(u'A\xad "'))
-    [(0, 'Upper'), (2, 'Sp'), (3, 'Close')]
-    >>> list(_preprocess_boundaries(u'\r\rA'))
-    [(0, 'CR'), (1, 'CR'), (2, 'Upper')]
+    >>> list(_preprocess_boundaries('Aa')) == [(0, 'Upper'), (1, 'Lower')]
+    True
+    >>> list(_preprocess_boundaries('A a')) == [(0, 'Upper'), (1, 'Sp'), (2, 'Lower')]
+    True
+    >>> list(_preprocess_boundaries('A" a')) == [(0, 'Upper'), (1, 'Close'), (2, 'Sp'), (3, 'Lower')]
+    True
+    >>> list(_preprocess_boundaries('A\xad "')) == [(0, 'Upper'), (2, 'Sp'), (3, 'Close')]
+    True
+    >>> list(_preprocess_boundaries('\r\rA')) == [(0, 'CR'), (1, 'CR'), (2, 'Upper')]
+    True
     """
     
     prev_prop = None
@@ -110,7 +115,7 @@ def sentence_breakables(s):
     1 for "break" and 0 for "do not break".  The length of iteration 
     will be the same as ``len(s)``.
     
-    >>> s = u'He said, \u201cAre you going?\u201d John shook his head.'
+    >>> s = 'He said, \u201cAre you going?\u201d John shook his head.'
     >>> list(sentence_breakables(s))
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     """
@@ -220,7 +225,7 @@ def sentence_boundaries(s, tailor=None):
     
     >>> list(sentence_boundaries(u'ABC'))
     [0, 3]
-    >>> s = u'He said, \u201cAre you going?\u201d John shook his head.'
+    >>> s = 'He said, \u201cAre you going?\u201d John shook his head.'
     >>> list(sentence_boundaries(s))
     [0, 26, 46]
     >>> list(sentence_boundaries(u''))
@@ -237,9 +242,9 @@ def sentences(s, tailor=None):
     
     """Iterate every sentence of `s`
     
-    >>> s = u'He said, \u201cAre you going?\u201d John shook his head.'
-    >>> list(sentences(s))
-    [u'He said, \u201cAre you going?\u201d ', u'John shook his head.']
+    >>> s = 'He said, \u201cAre you going?\u201d John shook his head.'
+    >>> list(sentences(s)) == ['He said, \u201cAre you going?\u201d ', 'John shook his head.']
+    True
     """
     
     breakables = sentence_breakables(s)

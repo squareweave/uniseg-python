@@ -1,3 +1,4 @@
+# encoding: utf-8
 """Unicode word breaking
 
 UAX #29: Unicode Text Segmentation (Unicode 6.2.0)
@@ -5,12 +6,15 @@ http://www.unicode.org/reports/tr29/tr29-21.html
 """
 
 
-from breaking import boundaries, break_units
-from codepoint import code_point, code_points
-from db import word_break as _word_break
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
 
+from .breaking import boundaries, break_units
+from .codepoint import code_point, code_points
+from .db import word_break as _word_break
 
-__revision__ = '$Rev: 2122 $'
 
 __all__ = [
     'word_break',
@@ -106,19 +110,19 @@ def word_break(c, index=0):
     
     `c` must be a single Unicode code point string.
     
-    >>> word_break(u'\x0d')
-    'CR'
-    >>> word_break(u'\x0b')
-    'Newline'
-    >>> word_break(u'\u30a2')
-    'Katakana'
+    >>> print(word_break('\x0d'))
+    CR
+    >>> print(word_break('\x0b'))
+    Newline
+    >>> print(word_break('\u30a2'))
+    Katakana
     
     If `index` is specified, this function consider `c` as a unicode 
     string and return Word_Break property of the code point at 
     c[index].
     
-    >>> word_break(u'A\u30a2', 1)
-    'Katakana'
+    >>> print(word_break('A\u30a2', 1))
+    Katakana
     """
     
     return _word_break(code_point(c, index))
@@ -128,14 +132,18 @@ def _preprocess_boundaries(s):
     
     r"""(internal) Preprocess WB4; X [Extend Format]* -> X
     
-    >>> list(_preprocess_boundaries(u'\r\n'))
-    [(0, 'CR'), (1, 'LF')]
-    >>> list(_preprocess_boundaries(u'A\u0308A'))
-    [(0, 'ALetter'), (2, 'ALetter')]
-    >>> list(_preprocess_boundaries(u'\n\u2060'))
-    [(0, 'LF'), (1, 'Format')]
-    >>> list(_preprocess_boundaries(u'\x01\u0308\x01'))
-    [(0, 'Other'), (2, 'Other')]
+    >>> result = list(_preprocess_boundaries('\r\n'))
+    >>> result == [(0, 'CR'), (1, 'LF')]
+    True
+    >>> result = list(_preprocess_boundaries('A\u0308A'))
+    >>> result == [(0, 'ALetter'), (2, 'ALetter')]
+    True
+    >>> result = list(_preprocess_boundaries('\n\u2060'))
+    >>> result == [(0, 'LF'), (1, 'Format')]
+    True
+    >>> result = list(_preprocess_boundaries('\x01\u0308\x01'))
+    >>> result == [(0, 'Other'), (2, 'Other')]
+    True
     """
     
     prev_prop = None
@@ -248,14 +256,14 @@ def word_boundaries(s, tailor=None):
 
 def words(s, tailor=None):
     
-    r"""Iterate *user-perceived* words of `s`
+    """Iterate *user-perceived* words of `s`
     
     These examples bellow is from
     http://www.unicode.org/reports/tr29/tr29-15.html#Word_Boundaries
     
-    >>> s = u'The quick (\u201cbrown\u201d) fox can\u2019t jump 32.3 feet, right?'
-    >>> '|'.join(words(s))
-    u'The| |quick| |(|\u201c|brown|\u201d|)| |fox| |can\u2019t| |jump| |32.3| |feet|,| |right|?'
+    >>> s = 'The quick (“brown”) fox can’t jump 32.3 feet, right?'
+    >>> print('|'.join(words(s)))
+    The| |quick| |(|“|brown|”|)| |fox| |can’t| |jump| |32.3| |feet|,| |right|?
     >>> list(words(u''))
     []
     """

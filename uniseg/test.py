@@ -2,11 +2,16 @@
 """
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 import locale
 import unittest
-from types import MethodType
+from functools import wraps
 
-from codepoint import unichr, code_points
+from .codepoint import unichr, code_points
 
 
 preferred_encoding = locale.getpreferredencoding()
@@ -14,8 +19,8 @@ preferred_encoding = locale.getpreferredencoding()
 
 def parse_breaking_test_pattern(pattern):
     
-    BREAK = u'\u00f7'
-    DONT_BREAK = u'\u00d7'
+    BREAK = '\u00f7'
+    DONT_BREAK = '\u00d7'
     
     codepoint_list = []
     breakpoint_list = []
@@ -59,7 +64,7 @@ def implement_break_tests(func_boundaries, test_iter, skips=None):
             f = create_test_func(name, string, expect, comment)
             if (string, expect) in skips:
                 f = unittest.skip('test may be wrong.')(f)
-            setattr(cls, f.__name__, MethodType(f, None, cls))
+            setattr(cls, f.__name__, wraps(f)(lambda *a, **k: f(*a, **k)))
         
         return cls
     

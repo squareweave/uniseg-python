@@ -1,7 +1,12 @@
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 import os.path
 import sqlite3
 
-from codepoint import ord
+from .codepoint import ord
 
 
 _dbpath = os.path.join(os.path.dirname(__file__), 'ucd.sqlite3')

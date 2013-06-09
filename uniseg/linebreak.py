@@ -27,13 +27,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 
+from __future__ import (absolute_import,
+                        division,
+                        print_function,
+                        unicode_literals)
+
 from unicodedata import east_asian_width
 
-from breaking import boundaries, break_units
-from codepoint import ord, unichr, code_point, code_points
-from db import line_break as _line_break
+from .breaking import boundaries, break_units
+from .codepoint import ord, unichr, code_point, code_points
+from .db import line_break as _line_break
 
-__revision__ = '$Rev: 2193 $'
 
 __all__ = [
     'line_break',
@@ -236,19 +240,19 @@ def line_break(c, index=0):
     
     `c` must be a single Unicode code point string.
     
-    >>> line_break(u'\x0d')
-    'CR'
-    >>> line_break(u' ')
-    'SP'
-    >>> line_break(u'1')
-    'NU'
+    >>> print(line_break('\x0d'))
+    CR
+    >>> print(line_break(' '))
+    SP
+    >>> print(line_break('1'))
+    NU
     
     If `index` is specified, this function consider `c` as a unicode 
     string and return Line_Break property of the code point at 
     c[index].
     
-    >>> line_break(u'a\x0d', 1)
-    'CR'
+    >>> print(line_break(u'a\x0d', 1))
+    CR
     """
     
     return _line_break(code_point(c, index))
@@ -260,14 +264,14 @@ def _preprocess_boundaries(s):
     
     Where X is not in (BK, CR, LF, NL, SP, ZW)
     
-    >>> list(_preprocess_boundaries(u'\r\n'))
-    [(0, 'CR'), (1, 'LF')]
-    >>> list(_preprocess_boundaries(u'A\x01A'))
-    [(0, 'AL'), (2, 'AL')]
-    >>> list(_preprocess_boundaries(u'\n\x01'))
-    [(0, 'LF'), (1, 'CM')]
-    >>> list(_preprocess_boundaries(u'\n  A'))
-    [(0, 'LF'), (1, 'SP'), (2, 'SP'), (3, 'AL')]
+    >>> list(_preprocess_boundaries(u'\r\n')) == [(0, 'CR'), (1, 'LF')]
+    True
+    >>> list(_preprocess_boundaries(u'A\x01A')) == [(0, 'AL'), (2, 'AL')]
+    True
+    >>> list(_preprocess_boundaries(u'\n\x01')) == [(0, 'LF'), (1, 'CM')]
+    True
+    >>> list(_preprocess_boundaries(u'\n  A')) == [(0, 'LF'), (1, 'SP'), (2, 'SP'), (3, 'AL')]
+    True
     """
     
     prev_prop = None
@@ -459,17 +463,16 @@ def line_break_units(s, legacy=False, tailor=None):
     
     r"""Iterate every line breaking token of `s`
     
-    >>> s = u'The quick (\u201cbrown\u201d) fox can\u2019t jump 32.3 feet, right?'
-    >>> '|'.join(line_break_units(s))
-    u'The |quick |(\u201cbrown\u201d) |fox |can\u2019t |jump |32.3 |feet, |right?'
-    
+    >>> s = 'The quick (\u201cbrown\u201d) fox can\u2019t jump 32.3 feet, right?'
+    >>> '|'.join(line_break_units(s)) == 'The |quick |(\u201cbrown\u201d) |fox |can\u2019t |jump |32.3 |feet, |right?'
+    True
     >>> list(line_break_units(u''))
     []
     
-    >>> list(line_break_units(u'\u03b1\u03b1'))
-    [u'\u03b1\u03b1']
-    >>> list(line_break_units(u'\u03b1\u03b1', True))
-    [u'\u03b1', u'\u03b1']
+    >>> list(line_break_units('\u03b1\u03b1')) == [u'\u03b1\u03b1']
+    True
+    >>> list(line_break_units(u'\u03b1\u03b1', True)) == [u'\u03b1', u'\u03b1']
+    True
     """
     
     breakables = line_break_breakables(s, legacy)
