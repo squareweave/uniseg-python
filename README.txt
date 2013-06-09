@@ -52,9 +52,10 @@ Install
 
 Changes
 =======
+0.6.2 (2013-06-09)
+  - Python 3.3
 0.6.1 (2013-06-08)
   - Unicode 6.2.0
-  - Python 3.3
 
 References
 ==========
