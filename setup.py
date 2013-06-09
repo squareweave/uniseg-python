@@ -20,7 +20,7 @@ setup(
     scripts = ['unibreak.py', 'uniwrap.py', 'wxwrapdemo.py'],
     classifiers = [
         'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',

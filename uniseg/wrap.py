@@ -172,11 +172,11 @@ class TTWrapper(TextWrapper):
             def _line(line):
                 return line
         
-        next = iter(TextWrapper.wrap(self, s)).__next__
-        line = next()
+        _next = lambda : next(returiter(TextWrapper.wrap(self, s)))
+        line = _next()
         while 1:
             try:
-                next_line = next()
+                next_line = _next()
             except StopIteration:
                 yield _line(line)
                 break
@@ -282,11 +282,11 @@ class TTWrapHandler(object):
             def _line(line):
                 return line
         
-        next = iter(TextWrapper.wrap(self, s)).next
-        line = next()
+        _next = lambda : next(returiter(TextWrapper.wrap(self, s)))
+        line = _next()
         while 1:
             try:
-                next_line = next()
+                next_line = _next()
             except StopIteration:
                 yield _line(line)
                 break
