@@ -27,7 +27,7 @@ Supporting segmentations are:
 *grapheme cluster*
     `Grapheme cluster <http://www.unicode.org/glossary/#grapheme_cluster>`_ approximately represents *"user-perceived character."* They may be made up of single or multiple Unicode code points. e.g. "G" + *acute-accent* is a *user-perceived character*.
 *word break*
-    Word boundaries are familiar segmentation in many common text operations. e.g. Unit for text highlighting, cursor jumping etc. Note that *words* are not determinable only by spaces or puctuations in text in some languages. Such languages like Thai or Japanese require dictionaries to determine appropriate word boundaries. Though the package only provides simple word breaking implementation which is based on the scripts and doesn't use any dictionaires, it also provides ways to customize its default behaviours.
+    Word boundaries are familiar segmentation in many common text operations. e.g. Unit for text highlighting, cursor jumping etc. Note that *words* are not determinable only by spaces or punctuations in text in some languages. Such languages like Thai or Japanese require dictionaries to determine appropriate word boundaries. Though the package only provides simple word breaking implementation which is based on the scripts and doesn't use any dictionaires, it also provides ways to customize its default behaviours.
 *sentensce break*
     Sentence breaks are also common in text processing but they are more contextual and less formal. The sentence breaking implementation (which is specified in UAX: Unicode Standard Annex) in the package is simple and formal too. But it must be still useful in some usages.
 *line break*
