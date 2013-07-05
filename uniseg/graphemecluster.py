@@ -15,8 +15,6 @@ from .codepoint import code_point, code_points
 from .db import grapheme_cluster_break as _grapheme_cluster_break
 
 
-__revision__ = '$Rev: 2193 $'
-
 __all__ = [
     'grapheme_cluster_break',
     'grapheme_cluster_breakables',
