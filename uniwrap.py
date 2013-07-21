@@ -14,7 +14,7 @@ from __future__ import (absolute_import,
 import io
 import sys
 
-from uniseg import TTWrapper
+from uniseg import tt_wrap
 
 
 def argopen(file, mode, encoding=None, errors=None):

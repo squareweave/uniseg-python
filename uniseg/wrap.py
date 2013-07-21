@@ -1,5 +1,4 @@
-"""Text wrapping
-"""
+"""unicode-aware text wrapping """
 
 
 from __future__ import (absolute_import,
@@ -7,6 +6,7 @@ from __future__ import (absolute_import,
                         print_function,
                         unicode_literals)
 
+import re
 from unicodedata import east_asian_width
 
 from .codepoint import ord, code_point, code_points
@@ -14,291 +14,208 @@ from .graphemecluster import grapheme_clusters, grapheme_cluster_boundaries
 from .linebreak import line_break_boundaries
 
 
-__all__ = ['TextWrapper', 'TTWrapper']
+__all__ = ['Wrapper',
+           'TTFormatter', 'tt_width', 'tt_text_extents', 'tt_wrap']
 
 
-class TextWrapper(object):
+### Wrap
+
+class Wrapper(object):
     
-    """TextWrapper base class. """
+    """text wrapper class """
     
-    wrap_width = None
-    tab_width = 0
-    char_wrap = False
-    
-    def list_text_extents(self, s):
+    def __init__(self, formatter=None, char_wrap=False):
         
-        """Return a list of logical widths from start of the string to 
-        each character.
+        """init instance """
+
+        self._formatter = formatter
+        self._char_wrap = char_wrap
+        self.reset()
+
+    def _get_formatter(self):
+        return self._formatter
+    def _set_formatter(self, value):
+        self._formatter = value
+    formatter = property(
+        _get_formatter, _set_formatter,
+        doc="""formatter instance """)
+
+    def _get_char_wrap(self):
+        return self._char_wrap
+    def _set_char_wrap(self, value):
+        self._char_wrap = value
+    char_wrap = property(
+        _get_char_wrap, _set_char_wrap,
+        doc="""specify string should be wrapped in grapheme cluster 
+        boundaries not in line break boundaries """)
+
+    def reset(self):
         
-        (This is a place holder method to be implemented.)
+        """reset all states """
+
+        if self._formatter is not None:
+            self._formatter.reset()
+
+    @staticmethod
+    def _partial_extents(extents, start, stop=None):
+
+        """(internal) return partial extents of `extents[start:end]` """
         
+        if stop is None:
+            stop = len(extents)
+        extent_offset = extents[start-1] if start > 0 else 0
+        return [extents[x] - extent_offset for x in range(start, stop)]
+
+    def wrap(self, s, cur=0, offset=0, formatter=None, char_wrap=None):
+        
+        """wrap string `s` with given formatter and call appropriate 
+        formatter methods
+
+        `s`:
+            string to be wrapped.
+        `cur`:
+            starting position of the string in logical length.
+        `offset`:
+            left-side offset of wrapping string in logical length.
+            NOTE: This parameter is only used for calculating tab-stopping 
+            positions for now.
         """
-        
-        raise NotImplemented
-    
-    def iter_wrap_boundaries(self, s):
-        
-        """Iterate indices of line breaking boundaries of a string. """
-        
-        if not s:
-            return
-        
-        wrap_width = self.wrap_width
-        if wrap_width is None:
-            yield len(s)
-            return
-        
-        if self.char_wrap:
+
+        if formatter is None:
+            formatter = self.formatter
+        if char_wrap is None:
+            char_wrap = self.char_wrap
+        _partial_extents = self._partial_extents
+
+        iter_boundaries = line_break_boundaries
+        if char_wrap:
             iter_boundaries = grapheme_cluster_boundaries
-        else:
-            iter_boundaries = line_break_boundaries
         
-        widths = self.list_text_extents(s)
-        if wrap_width < 1:
-            wrap_width = 1
-        
-        total_width = 0
-        prev_breakpoint = 0
-        for breakpoint in iter_boundaries(s):
-            if breakpoint > 0:
-                width = widths[breakpoint-1] - total_width
-                if prev_breakpoint and width > wrap_width:
-                    yield prev_breakpoint
-                    total_width = widths[prev_breakpoint-1]
-            prev_breakpoint = breakpoint
-        yield breakpoint
-    
-    def wrap(self, s):
-        
-        """Iterate strings of wrapped lines of s. """
-        
-        i = 0
-        for j in self.iter_wrap_boundaries(s):
-            yield s[i:j]
-            i = j
-
-
-class TTWrapper(TextWrapper):
-    
-    """Fixed-width TextWrapper class. """
-    
-    tab_width = 8
-    legacy = False
-    expand_tabs = False
-    justify = False
-    
-    def list_text_extents(self, s):
-        
-        """Return a list of logical widths from start of the string to 
-        each character.
-        
-        """
-        
-        tab_width = self.tab_width
-        legacy = self.legacy
-        
-        widths = []
-        width = 0
-        prev_boundary = 0
-        for boundary in grapheme_cluster_boundaries(s):
-            if boundary:
-                cp = code_points(s[prev_boundary:boundary])[0]
-                if cp == '\t' and tab_width:
-                    width = (width // tab_width + 1) * tab_width
-                    widths.append(width)
+        for para in s.splitlines(True):
+            for field in re.split('(\\t)', para):
+                if field == '\t':
+                    tw = formatter.tab_width
+                    field_extents = [tw - (offset + cur) % tw]
                 else:
-                    eaw = east_asian_width(cp)
-                    if eaw == 'W' or eaw == 'F' or (eaw == 'A' and legacy):
-                        width += 2
-                    else:
-                        width += 1
-                    for __ in range(prev_boundary, boundary):
-                        widths.append(width)
-            prev_boundary = boundary
-        return widths
-    
-    def expandtabs(self, s):
-        
-        """Fill tabs with spaces. """
-        
-        widths = self.list_text_extents(s)
-        L = []
-        prev_width = 0
-        for c, width in zip(s, widths):
-            if c == '\t':
-                c = ' ' * (width - prev_width)
-            L.append(c)
-            prev_width = width
-        return ''.join(L)
-    
-    def justify_text(self, s):
-        
-        """Justify each line with padding spaces. """
-        
-        s = s.rstrip(' ')
-        
-        if ' ' not in s:
-            return s
-        
-        widths = self.list_text_extents(s)
-        if not widths:
-            return s
-        
-        n_additional_spaces = self.wrap_width - widths[-1]
-        if n_additional_spaces == 0:
-            return s
-        
-        L = []
-        tokens = s.split(' ')
-        nspaces = len(tokens) - 1 + n_additional_spaces
-        prev_x = 0
-        for i, tok in enumerate(tokens):
-            if i > 0:
-                x = nspaces * i // (len(tokens)-1)
-                L.append(' ' * (x - prev_x))
-                prev_x = x
-            L.append(tok)
-            first = False
-        return ''.join(L)
-    
-    def wrap(self, s):
-        
-        """Iterate strings of wrapped lines of s. """
-        
-        if self.expand_tabs:
-            def _line(line):
-                return self.expandtabs(line)
-        else:
-            def _line(line):
-                return line
-        
-        _next = lambda : next(returiter(TextWrapper.wrap(self, s)))
-        line = _next()
-        while 1:
-            try:
-                next_line = _next()
-            except StopIteration:
-                yield _line(line)
-                break
-            if self.justify:
-                line = self.justify_text(line)
-            yield _line(line)
-            line = next_line
+                    field_extents = formatter.text_extents(field)
+                prev_boundary = 0
+                prev_extent = 0
+                breakpoint = 0
+                for boundary in iter_boundaries(field):
+                    extent = field_extents[boundary-1]
+                    w = extent - prev_extent
+                    if cur + w > formatter.wrap_width:
+                        line = field[breakpoint:prev_boundary]
+                        line_extents = _partial_extents(field_extents,
+                                                        breakpoint,
+                                                        prev_boundary)
+                        formatter.handle_text(line, line_extents)
+                        formatter.handle_new_line()
+                        cur = 0
+                        breakpoint = prev_boundary
+                    cur += w
+                    prev_boundary = boundary
+                    prev_extent = extent
+                line = field[breakpoint:]
+                line_extents = _partial_extents(field_extents, breakpoint)
+                formatter.handle_text(line, line_extents)
+            formatter.handle_new_line()
+            cur = 0
 
 
-class TTWrapHandler(object):
+### TT
+
+class TTFormatter(object):
     
-    """Fixed-width text wrapping handler """
+    """fixed-width wrapping formatter """
+
+    def __init__(self, wrap_width,
+                 tab_width=8, tab_char=' ', ambiguous_as_wide=False):
+        
+        """init instance """
+
+        self.wrap_width = wrap_width
+        self.tab_width = tab_width
+        self.ambiguous_as_wide = ambiguous_as_wide
+        self.tab_char = tab_char
+
+        self._lines = ['']
+
+    def _get_ambiguous_as_wide(self):
+        return self._ambiguous_as_wide
+    def _set_ambiguous_as_wide(self, value):
+        self._ambiguous_as_wide = value
+    ambiguous_as_wide = property(
+        _get_ambiguous_as_wide, _set_ambiguous_as_wide,
+        doc="""treat code points with its East_Easian_Width property is 
+        'A' as those with 'W'; having double width as alpha-numerics """)
     
-    tab_width = 8
-    legacy = False
-    expand_tabs = False
-    justify = False
+    def _get_tab_char(self):
+        return self._tab_char
+    def _set_tab_char(self, value):
+        if (east_asian_width(value) not in ('N', 'Na', 'H')):
+            raise ValueError("""only a narrow code point is available 
+                             for tab_char""")
+        self._tab_char = value
+    tab_char = property(
+        _get_tab_char, _set_tab_char,
+        doc="""character to fill tab spaces with """)
     
+    def _get_wrap_width(self):
+        return self._wrap_width
+    def _set_wrap_width(self, value):
+        self._wrap_width = value
+    wrap_width = property(
+        _get_wrap_width, _set_wrap_width,
+        doc="""wrapping width """)
+
+    def _get_tab_width(self):
+        return self._tab_width
+    def _set_tab_width(self, value):
+        self._tab_width = value
+    tab_width = property(
+        _get_tab_width, _set_tab_width,
+        doc="""forwarding size of tabs """)
+
+    def reset(self):
+        
+        """reset all states of the formatter """
+        
+        del self._lines[:]
+
     def text_extents(self, s):
         
-        """Return a list of logical widths from start of the string to 
-        each character
+        """return a list of the logical lengths from start of the 
+        string to each characters in `s` """
+
+        return tt_text_extents(s, self.ambiguous_as_wide)
+
+    def handle_text(self, text, extents):
         
-        >>> 
-        
-        """
-        
-        tab_width = self.tab_width
-        legacy = self.legacy
-        
-        widths = []
-        width = 0
-        prev_boundary = 0
-        for boundary in grapheme_cluster_boundaries(s):
-            if boundary:
-                cp = code_points(s[prev_boundary:boundary])[0]
-                if cp == '\t' and tab_width:
-                    width = (width // tab_width + 1) * tab_width
-                    widths.append(width)
-                else:
-                    eaw = east_asian_width(cp)
-                    if eaw == 'W' or eaw == 'F' or (eaw == 'A' and legacy):
-                        width += 2
-                    else:
-                        width += 1
-                    for __ in range(prev_boundary, boundary):
-                        widths.append(width)
-            prev_boundary = boundary
-        return widths
+        """handler method which is called when a text should be put 
+        on the current position """
+
+        if text == '\t':
+            text = self.tab_char * extents[0]
+        self._lines[-1] += text
+
+    def handle_new_line(self):
+
+        """handler method which is called when the current line is over 
+        and a new line begins """
+
+        self._lines.append('')
     
-    def expandtabs(self, s):
-        
-        """Fill tabs with spaces. """
-        
-        widths = self.list_text_extents(s)
-        L = []
-        prev_width = 0
-        for c, width in zip(s, widths):
-            if c == '\t':
-                c = ' ' * (width - prev_width)
-            L.append(c)
-            prev_width = width
-        return ''.join(L)
-    
-    def justify_text(self, s):
-        
-        """Justify each line with padding spaces. """
-        
-        s = s.rstrip(' ')
-        
-        if ' ' not in s:
-            return s
-        
-        widths = self.list_text_extents(s)
-        if not widths:
-            return s
-        
-        n_additional_spaces = self.wrap_width - widths[-1]
-        if n_additional_spaces == 0:
-            return s
-        
-        L = []
-        tokens = s.split(' ')
-        nspaces = len(tokens) - 1 + n_additional_spaces
-        prev_x = 0
-        for i, tok in enumerate(tokens):
-            if i > 0:
-                x = nspaces * i // (len(tokens)-1)
-                L.append(' ' * (x - prev_x))
-                prev_x = x
-            L.append(tok)
-            first = False
-        return ''.join(L)
-    
-    def wrap(self, s):
-        
-        """Iterate strings of wrapped lines of s. """
-        
-        if self.expand_tabs:
-            def _line(line):
-                return self.expandtabs(line)
-        else:
-            def _line(line):
-                return line
-        
-        _next = lambda : next(returiter(TextWrapper.wrap(self, s)))
-        line = _next()
-        while 1:
-            try:
-                next_line = _next()
-            except StopIteration:
-                yield _line(line)
-                break
-            if self.justify:
-                line = self.justify_text(line)
-            yield _line(line)
-            line = next_line
+    def lines(self):
+
+        """iterate every wrapped line strings """
+
+        return iter(self._lines)
 
 
-def tt_width(s, index=0, legacy=False):
+def tt_width(s, index=0, ambiguous_as_wide=False):
     
-    """Return logical width of the grapheme cluster at `s[index]` on 
+    """return logical width of the grapheme cluster at `s[index]` on 
     fixed-width typography
     
     Return value will be 1 (halfwidth) or 2 (fullwidth).
@@ -308,50 +225,72 @@ def tt_width(s, index=0, legacy=False):
     
     >>> tt_width('A')
     1
-    >>> tt_width('\u8240')
+    >>> tt_width('\\u8240')  # U+8240: CJK UNIFIED IDEOGRAPH-8240
     2
-    >>> tt_width('\x67\u0308')
+    >>> tt_width('g\\u0308') # U+0308: COMBINING DIAERESIS
     1
+    >>> tt_width('\\U00029e3d')
+    2
     
-    If `legacy` is specified to True, some characters such as greek 
-    alphabets are treated as they have fullwidth as well as 
+    If `ambiguous_as_wide` is specified to True, some characters such 
+    as greek alphabets are treated as they have fullwidth as well as 
     ideographics does.
     
-    >>> tt_width('\u03b1')
+    >>> tt_width('\\u03b1')  # U+03B1: GREEK SMALL LETTER ALPHA
     1
-    >>> tt_width('\u03b1', legacy=True)
+    >>> tt_width('\\u03b1', ambiguous_as_wide=True)
     2
     """
     
-    c = code_point(s, index)
-    eaw = east_asian_width(c)
-    if eaw in ('W', 'F') or (eaw == 'A' and legacy):
+    cp = code_point(s, index)
+    eaw = east_asian_width(cp)
+    if eaw in ('W', 'F') or (eaw == 'A' and ambiguous_as_wide):
         return 2
     return 1
 
 
-def tt_text_extents(s, legacy=False):
+def tt_text_extents(s, ambiguous_as_wide=False):
     
-    """Return a list of logical widths from start of the string to 
-    each character on fixed-width typography
+    """return a list of logical widths from the start of `s` to 
+    each character (*!= code point*) on fixed-width typography
     
     >>> tt_text_extents('')
     []
     >>> tt_text_extents('abc')
     [1, 2, 3]
-    >>> tt_text_extents('\u3042\u3044\u3046')
+    >>> tt_text_extents('\\u3042\\u3044\\u3046')
     [2, 4, 6]
+    >>> import sys
+    >>> s = '\\U00029e3d'    # test a code point out of BMP.
+    >>> actual = tt_text_extents(s)
+    >>> expect = [2] if sys.maxunicode > 0xffff else [2, 2]
+    >>> len(s) == len(expect)
+    True
+    >>> actual == expect
+    True
     
-    The meaning of `legacy` is the same as that of `tt_width()`.
+    The meaning of `ambiguous_as_wide` is the same as that of `tt_width()`.
     """
     
     widths = []
     total_width = 0
     for gc in grapheme_clusters(s):
-        total_width += tt_width(gc, legacy)
+        total_width += tt_width(gc, ambiguous_as_wide)
         widths.extend(total_width for __ in gc)
     return widths
 
+
+def tt_wrap(s, wrap_width, tab_width=8, cur=0, offset=0,
+            ambiguous_as_wide=False, char_wrap=False):
+    
+    wrapper = Wrapper()
+    formatter = TTFormatter(wrap_width, tab_width,
+                            ambiguous_as_wide=ambiguous_as_wide)
+    wrapper.wrap(s, cur, offset, formatter, char_wrap)
+    return formatter.lines()
+
+
+### Main
 
 if __name__ == '__main__':
     import doctest

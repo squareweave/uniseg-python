@@ -34,9 +34,12 @@ __all__ = [
     'line_break_units',
     'boundaries',
     'break_units',
-    'TextWrapper',
-    'TTWrapper',
+    'Wrapper',
+    'TTFormatter',
+    'tt_width',
+    'tt_text_extents',
+    'tt_wrap',
 ]
 
-# The version of the Unicode database used in this module.
-unidata_version = '5.2.0'
+# the version of the Unicode database used in this module.
+unidata_version = '6.2.0'
