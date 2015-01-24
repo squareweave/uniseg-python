@@ -59,8 +59,12 @@ sdist:
 wheel:
 	$(PYTHON) setup.py bdist_wheel -d $(DIR_DIST) --universal
 
-upload:
-	$(PYTHON) setup.py sdist -d $(DIR_DIST) --formats=zip upload
+release:
+	$(PYTHON) setup.py \
+	register \
+	sdist -d $(DIR_DIST) --formats=zip \
+	bdist_wheel -d $(DIR_DIST) --universal \
+	upload
 
 archive:
 	-$(MKDIR) -p $(DIR_DIST)
