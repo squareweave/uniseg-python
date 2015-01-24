@@ -35,7 +35,7 @@ Supporting segmentations are:
 
 Requirements
 ============
-- Python 2.7 / 3.3
+- Python 2.7 / 3.3 / 3.4
 
 Download
 ========
@@ -52,6 +52,9 @@ Install
 
 Changes
 =======
+0.6.3 (2015-01-25)
+  - Python 3.4
+  - Support modern setuptools, pip and wheel.
 0.6.2 (2013-06-09)
   - Python 3.3
 0.6.1 (2013-06-08)

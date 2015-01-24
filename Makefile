@@ -56,6 +56,9 @@ cleanall: clean
 sdist:
 	$(PYTHON) setup.py sdist -d $(DIR_DIST) --formats=zip
 
+wheel:
+	$(PYTHON) setup.py bdist_wheel -d $(DIR_DIST) --universal
+
 upload:
 	$(PYTHON) setup.py sdist -d $(DIR_DIST) --formats=zip upload
 
