@@ -1,21 +1,19 @@
-from __future__ import (absolute_import,
-                        division,
-                        print_function,
-                        unicode_literals)
-
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 
 setup(
     name = 'uniseg',
-    version = '0.6.2',
+    version = '0.6.3',
     author = 'Masaaki Shibata',
     author_email = 'mshibata@emptypage.jp',
     url = 'https://bitbucket.org/emptypage/uniseg-python',
     description = 'A pure Python module to determine Unicode text segmentations',
     packages = ['uniseg'],
     package_data = {
-        'uniseg': ['ucd.sqlite3'],
+        'uniseg': ['ucd.sqlite3']
     },
     scripts = ['unibreak.py', 'uniwrap.py', 'wxwrapdemo.py'],
     classifiers = [
