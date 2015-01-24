@@ -1,11 +1,10 @@
 syntax: glob
 **.pyc
+*.egg-info
 MANIFEST
 build
+dist
+venv*
 csv
 data
-dist
-v27
-v34
-venv
-uniseg/ucd.sqlite3
+**.sqlite3
