@@ -1,11 +1,11 @@
 syntax: glob
 **.pyc
-.DS_Store
 MANIFEST
-uniseg/ucd.sqlite3
 build
 csv
 data
 dist
 v27
-v33
+v34
+venv
+uniseg/ucd.sqlite3
