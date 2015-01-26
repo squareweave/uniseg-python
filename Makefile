@@ -2,10 +2,10 @@
 
 PROJ_NAME = uniseg
 
-MKDIR = mkdir
+MKDIR = "mkdir"
 MV = mv
 RM = rm -v
-CURL = curl
+CURL = curl --compressed
 PYTHON = python
 SQLITE3 = sqlite3
 
