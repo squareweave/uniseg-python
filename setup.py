@@ -15,6 +15,9 @@ setup(
     package_data = {
         'uniseg': ['ucd.sqlite3']
     },
+    entry_points = {
+        'console_scripts': ['uniseg-dbpath = uniseg.db:print_dbpath'],
+    },
     scripts = ['unibreak.py', 'uniwrap.py', 'wxwrapdemo.py'],
     classifiers = [
         'Development Status :: 3 - Alpha',

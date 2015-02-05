@@ -3,13 +3,48 @@ from __future__ import (absolute_import,
                         print_function,
                         unicode_literals)
 
-import os.path
+import errno
+import os
 import sqlite3
 
 from .codepoint import ord
 
 
-_dbpath = os.path.join(os.path.dirname(__file__), 'ucd.sqlite3')
+def print_dbpath():
+
+    """Print the path of the database file. """
+
+    print(os.path.abspath(_dbpath))
+
+
+def find_dbpath():
+
+    """Find the database file in the specified order and return its path.
+
+    The search paths (in the order of priority) are:
+    1. The directory of the package,
+    2. that of the executable
+    3. and the current directory.
+    """
+    dbname = 'ucd.sqlite3'
+    
+    dbpath = os.path.join(os.path.dirname(__file__), dbname)
+    if (os.path.exists(dbpath)):
+        return dbpath
+
+    dbpath = os.path.join(os.path.dirname(sys.executable), dbname)
+    if (os.path.exists(dbpath)):
+        return dbpath
+
+    dbpath = os.path.join(os.getcwd(), dbname)
+    if (os.path.exists(dbpath)):
+        return dbpath
+
+    raise IOError(errno.ENOENT, os.strerror(errno.ENOENT), dbpath)
+
+
+
+_dbpath = find_dbpath()
 _conn = sqlite3.connect(_dbpath)
 
 
@@ -79,4 +114,3 @@ def iter_line_break_tests():
     cur = _conn.cursor()
     cur.execute('select name, pattern, comment from LineBreakTest')
     return iter(cur)
-
