@@ -6,7 +6,7 @@ except ImportError:
 
 setup(
     name = 'uniseg',
-    version = '0.6.4a',
+    version = '0.6.4a0',
     author = 'Masaaki Shibata',
     author_email = 'mshibata@emptypage.jp',
     url = 'https://bitbucket.org/emptypage/uniseg-python',
