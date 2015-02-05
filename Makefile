@@ -8,6 +8,7 @@ RM = rm -v
 CURL = curl --compressed
 PYTHON = python
 SQLITE3 = sqlite3
+PIP = pip
 
 UNICODE_VERSION = 6.2.0
 URL_DOWNLOAD = http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd
@@ -74,7 +75,7 @@ archive:
 	$(MV) $(PROJ_NAME)-r`svnversion`.zip $(DIR_DIST)
 
 install:
-	$(PYTHON) setup.py install --home=$(HOME)
+	$(PIP) install -e .
 
 csv/GraphemeClusterBreak.csv: $(DIR_DOWNLOAD)/auxiliary/GraphemeBreakProperty.txt
 	-$(MKDIR) -p $(dir $@)
