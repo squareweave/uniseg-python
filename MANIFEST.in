@@ -1,1 +1,1 @@
-include uniseg.ja.html
+include Makefile schema.sql tools/*.py
