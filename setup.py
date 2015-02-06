@@ -13,7 +13,7 @@ setup(
     description = 'A pure Python module to determine Unicode text segmentations',
     packages = ['uniseg'],
     package_data = {
-        'uniseg': ['ucd.sqlite3', 'samples/*.py']
+        'uniseg': ['ucd.sqlite3', 'docs/*.html', 'samples/*.py']
     },
     entry_points = {
         'console_scripts': ['uniseg-dbpath = uniseg.db:print_dbpath'],
