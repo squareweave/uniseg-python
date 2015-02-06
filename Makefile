@@ -67,13 +67,6 @@ release:
 	bdist_wheel -d $(DIR_DIST) --universal \
 	upload
 
-archive:
-	-$(MKDIR) -p $(DIR_DIST)
-	svn up
-	svn export . $(PROJ_NAME)-r`svnversion`
-	zip -r -m $(PROJ_NAME)-r`svnversion`.zip $(PROJ_NAME)-r`svnversion`
-	$(MV) $(PROJ_NAME)-r`svnversion`.zip $(DIR_DIST)
-
 install:
 	$(PIP) install -e .
 
