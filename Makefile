@@ -1,4 +1,4 @@
-.PHONY: clean test upload
+.PHONY: clean test upload docs
 
 PROJ_NAME = uniseg
 
@@ -69,6 +69,9 @@ release:
 
 install:
 	$(PIP) install -e .
+
+docs:
+	sphinx-build -b html docs docs/_build/html
 
 csv/GraphemeClusterBreak.csv: $(DIR_DOWNLOAD)/auxiliary/GraphemeBreakProperty.txt
 	-$(MKDIR) -p $(dir $@)
