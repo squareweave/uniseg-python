@@ -46,14 +46,20 @@ All sources and build tools etc. (Bitbucket)
 
 Install
 =======
-::
 
-    # python setup.py install
+Just type::
+
+    % pip install uniseg
+
+or download the archive and::
+
+    % python setup.py install
 
 Changes
 =======
 0.6.4 (2015-02-10)
   - Add ``uniseg-dbpath`` console command, which just print the path of ``ucd.sqlite3``.
+  - Include sample scripts under the package directory.
 0.6.3 (2015-01-25)
   - Python 3.4
   - Support modern setuptools, pip and wheel.
