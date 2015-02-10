@@ -41,12 +41,14 @@ def find_dbpath():
     if (os.path.exists(dbpath)):
         return dbpath
 
-    raise IOError(errno.ENOENT, os.strerror(errno.ENOENT), dbpath)
-
+    return None
 
 
 _dbpath = find_dbpath()
-_conn = sqlite3.connect(_dbpath)
+if _dbpath:
+    _conn = sqlite3.connect(_dbpath)
+else:
+    _conn = None
 
 
 def grapheme_cluster_break(u):
