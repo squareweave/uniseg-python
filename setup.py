@@ -32,4 +32,5 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Topic :: Text Processing',
     ],
+    zip_safe = False,
 )
