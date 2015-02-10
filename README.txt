@@ -1,6 +1,7 @@
 =============
 uniseg-python
 =============
+
 A pure Python module to determine Unicode text segmentations
 
 - `Features`_
@@ -12,8 +13,12 @@ A pure Python module to determine Unicode text segmentations
 - `Related / Similar Projects`_
 - `License`_
 
+You can see the full documentation including the package reference on http://uniseg-python.readthedocs.org.
+
+
 Features
 ========
+
 This package provides:
 
 - Functions to get Unicode Character Database (UCD) properties concerned with text segmentations.
@@ -33,16 +38,21 @@ Supporting segmentations are:
 *line break*
     Implementing line breaking algorithm is one of the key features of this package. The feature is important in many general text presentations in both CLI and GUI applications.
 
+
 Requirements
 ============
+
 - Python 2.7 / 3.3 / 3.4
+
 
 Download
 ========
-Source distribution (PyPI)
+
+Source / binary distributions (PyPI)
     https://pypi.python.org/pypi/uniseg
 All sources and build tools etc. (Bitbucket)
     https://bitbucket.org/emptypage/uniseg-python
+
 
 Install
 =======
@@ -55,11 +65,13 @@ or download the archive and::
 
     % python setup.py install
 
+
 Changes
 =======
+
 0.6.4 (2015-02-10)
   - Add ``uniseg-dbpath`` console command, which just print the path of ``ucd.sqlite3``.
-  - Include sample scripts under the package directory.
+  - Include sample scripts under the package's subdirectory.
 0.6.3 (2015-01-25)
   - Python 3.4
   - Support modern setuptools, pip and wheel.
@@ -68,12 +80,15 @@ Changes
 0.6.1 (2013-06-08)
   - Unicode 6.2.0
 
+
 References
 ==========
+
 *UAX #14: Unicode Line Breaking Algorithm* (6.2.0)
     http://www.unicode.org/reports/tr14/tr14-30.html
 *UAX #29 Unicode Text Segmentation* (6.2.0)
     http://www.unicode.org/reports/tr29/tr29-21.html
+
 
 Related / Similar Projects
 ==========================
@@ -83,8 +98,10 @@ Related / Similar Projects
 `pytextseg <https://pypi.python.org/pypi/pytextseg>`_ - Python module for text segmentation
     *pytextseg* package forcuses very similar goal to ours; it provides Unicode-aware text wrapping features. They designed and uses their original string class (not built-in ``unicode`` / ``str`` classes) for the purpose. We use strings as just ordinary built-in ``unicode`` / ``str`` objects for text processing in our modules.
 
+
 License
 =======
+
 Copyright (c) 2013 Masaaki Shibata <mshibata@emptypage.jp>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
