@@ -9,6 +9,7 @@ CURL = curl --compressed
 PYTHON = python
 SQLITE3 = sqlite3
 PIP = pip
+SPHINX_BUILD = sphinx-build
 
 UNICODE_VERSION = 6.2.0
 URL_DOWNLOAD = http://www.unicode.org/Public/$(UNICODE_VERSION)/ucd
@@ -16,6 +17,8 @@ DIR_DOWNLOAD = data/$(UNICODE_VERSION)
 DIR_SRC = uniseg
 DIR_DIST = dist
 UCD_DB = $(DIR_SRC)/ucd.sqlite3
+DIR_DOCS = docs
+DIR_DOCS_BUILD = docs/_build
 
 CSV_FILES =\
     csv/GraphemeClusterBreak.csv\
@@ -46,7 +49,7 @@ clean:
 	-$(RM) $(DIR_SRC)/*.pyc
 	-$(RM) -r csv
 
-cleanall: clean
+cleanall: clean cleandocs
 	-$(RM) $(UCD_DB)
 	-$(RM) -r $(DIR_DOWNLOAD)
 	-$(RM) MANIFEST
@@ -71,7 +74,10 @@ install:
 	$(PIP) install -e .
 
 docs:
-	sphinx-build -b html docs docs/_build/html
+	$(SPHINX_BUILD) -b html $(DIR_DOCS) $(DIR_DOCS_BUILD)/html
+
+cleandocs:
+	-$(RM) -r $(DIR_DOCS_BUILD)
 
 csv/GraphemeClusterBreak.csv: $(DIR_DOWNLOAD)/auxiliary/GraphemeBreakProperty.txt
 	-$(MKDIR) -p $(dir $@)
