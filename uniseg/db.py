@@ -6,6 +6,7 @@ from __future__ import (absolute_import,
 import errno
 import os
 import sqlite3
+import sys
 
 from .codepoint import ord
 
