@@ -1,20 +1,13 @@
 #!/usr/bin/env python
-"""Unicode-aware text wrapping.
-
-Masaaki Shibata <mshibata@emptypage.jp>
-http://www.emptypage.jp/
-"""
-
 
 from __future__ import (absolute_import,
                         division,
                         print_function,
                         unicode_literals)
-
 import io
 import sys
 
-from uniseg import tt_wrap
+from uniseg.wrap import tt_wrap
 
 
 def argopen(file, mode, encoding=None, errors=None):

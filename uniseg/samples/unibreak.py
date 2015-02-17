@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 
-
 from __future__ import (absolute_import,
                         division,
                         print_function,
                         unicode_literals)
-
 import io
 import sys
 
-from uniseg import (code_points,
-                    grapheme_clusters,
-                    words,
-                    sentences,
-                    line_break_units)
+from uniseg.codepoint       import code_points
+from uniseg.graphemecluster import grapheme_clusters
+from uniseg.wordbreak       import words
+from uniseg.sentencebreak   import sentences
+from uniseg.linebreak       import line_break_units
 
 
 def argopen(file, mode, encoding=None, errors=None):
