@@ -14,7 +14,7 @@ from .graphemecluster import grapheme_clusters, grapheme_cluster_boundaries
 from .linebreak import line_break_boundaries
 
 
-__all__ = ['Wrapper',
+__all__ = ['Wrapper', 'Formatter',
            'TTFormatter', 'tt_width', 'tt_text_extents', 'tt_wrap']
 
 
@@ -121,6 +121,43 @@ class Wrapper(object):
                 formatter.handle_text(line, line_extents)
             formatter.handle_new_line()
             cur = 0
+
+
+class Formatter(object):
+    
+    """The abstruct base class for formatters used by a ``Wrapper`` object
+
+    This class is implemented only for convinience sake. You don't have to 
+    design your own formatter as a subclass of it, while it is not 
+    deprecated either.
+
+    All formatter classes should have the methods this class has. They 
+    are invoked by a ``Wrapper`` object to determin *logical widths* of 
+    texts and to give you a way for handling its behaviour such as rendering.
+    """
+
+    def reset(self):
+        
+        """Reset all states of the formatter """
+        pass
+
+    def text_extents(self, s):
+        
+        """Return a list of logical lengths from start of the string to 
+        each characters in `s` """
+        pass
+    
+    def handle_text(self, text, extents):
+        
+        """The handler method which is invoked when `text` should be put 
+        on the current position """
+        pass
+
+    def handle_new_line(self):
+
+        """The handler method which is invoked when the current line is 
+        over and a new line begins """
+        pass
 
 
 ### TT

@@ -35,6 +35,7 @@ __all__ = [
     'boundaries',
     'break_units',
     'Wrapper',
+    'Formatter',
     'TTFormatter',
     'tt_width',
     'tt_text_extents',
