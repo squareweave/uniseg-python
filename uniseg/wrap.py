@@ -1,11 +1,10 @@
-"""unicode-aware text wrapping """
+"""Unicode-aware text wrapping """
 
 
 from __future__ import (absolute_import,
                         division,
                         print_function,
                         unicode_literals)
-
 import re
 from unicodedata import east_asian_width
 
@@ -14,8 +13,14 @@ from .graphemecluster import grapheme_clusters, grapheme_cluster_boundaries
 from .linebreak import line_break_boundaries
 
 
-__all__ = ['Wrapper', 'Formatter',
-           'TTFormatter', 'tt_width', 'tt_text_extents', 'tt_wrap']
+__all__ = [
+    'Wrapper',
+    'Formatter',
+    'TTFormatter', 
+    'tt_width',
+    'tt_text_extents',
+    'tt_wrap'
+]
 
 
 ### Wrap

@@ -1,39 +1,17 @@
-"""Unicode codepoint
-
-Copyright (c) 2012 Masaaki Shibata <mshibata@emptypage.jp>
-
-Permission is hereby granted, free of charge, to any person obtaining 
-a copy of this software and associated documentation files (the 
-"Software"), to deal in the Software without restriction, including 
-without limitation the rights to use, copy, modify, merge, publish, 
-distribute, sublicense, and/or sell copies of the Software, and to 
-permit persons to whom the Software is furnished to do so, subject to 
-the following conditions:
-
-The above copyright notice and this permission notice shall be 
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""
+"""Unicode code point """
 
 
 from __future__ import (absolute_import,
                         division,
                         print_function,
                         unicode_literals)
-
 import re
 import sys
 if sys.version_info >= (3, 0):
     from builtins import ord as _ord, chr as _chr
 else:
     from __builtin__ import ord as _ord, unichr as _chr
+
 
 __all__ = [
     'ord',
@@ -108,19 +86,20 @@ else:
 
 def ord(c, index=None):
     
-    r"""Return the integer value of the Unicode code point `c`
+    """Return the integer value of the Unicode code point `c`
     
     NOTE: Some Unicode code points may be expressed with a couple of 
     other code points ("surrogate pair").  This function treats 
     surrogate pairs as representations of original code points; e.g. 
-    ``ord(u'\ud842\udf9f')`` returns 134047 (0x20b9f).  ``u'\ud842\udf9f'`` is 
-    a surrogate pair expression which means ``u'\U00020b9f'``:
+    ``ord(u'\\ud842\\udf9f')`` returns ``134047`` (``0x20b9f``). 
+    ``u'\\ud842\\udf9f'`` is a surrogate pair expression which means 
+    ``u'\\U00020b9f'``.
     
     >>> ord('a')
     97
-    >>> ord('\u3042')
+    >>> ord('\\u3042')
     12354
-    >>> ord('\U00020b9f')
+    >>> ord('\\U00020b9f')
     134047
     >>> ord('abc')
     Traceback (most recent call last):
@@ -133,15 +112,15 @@ def ord(c, index=None):
     >>> ord('a')
     97
     
-    When `index` argument is specified (to not None), this function 
+    When `index` argument is specified (to not ``None``), this function 
     treats `c` as a Unicode string and returns integer value of code 
-    point at c[index] (or may be c[index:index+2]):
+    point at ``c[index]`` (or may be ``c[index:index+2]``):
     
     >>> ord('hello', 0)
     104
     >>> ord('hello', 1)
     101
-    >>> ord('a\U00020b9f', 1)
+    >>> ord('a\\U00020b9f', 1)
     134047
     """
     
@@ -150,7 +129,7 @@ def ord(c, index=None):
 
 def unichr(cp):
     
-    r"""Return the unicode object represents the code point integer `cp`
+    """Return the unicode object represents the code point integer `cp`
     
     >>> unichr(0x61) == 'a'
     True
@@ -159,10 +138,10 @@ def unichr(cp):
     couple of other code points ("surrogate pair") in narrow-build 
     Python.  In those cases, this function will return a unicode 
     object of which length is more than one; e.g. ``unichr(0x20b9f)`` 
-    returns ``u'\U00020b9f'`` while built-in ``unichr()`` may raise 
+    returns ``u'\\U00020b9f'`` while built-in ``unichr()`` may raise 
     ValueError.
     
-    >>> unichr(0x20b9f) == '\U00020b9f'
+    >>> unichr(0x20b9f) == '\\U00020b9f'
     True
     """
     
@@ -171,15 +150,15 @@ def unichr(cp):
 
 def code_point(s, index=0):
     
-    r"""Return code point at s[index]
+    """Return code point at s[index]
     
     >>> code_point('ABC') == 'A'
     True
     >>> code_point('ABC', 1) == 'B'
     True
-    >>> code_point('\U00020b9f\u3042') == '\U00020b9f'
+    >>> code_point('\\U00020b9f\\u3042') == '\\U00020b9f'
     True
-    >>> code_point('\U00020b9f\u3042', 1) == '\u3042'
+    >>> code_point('\\U00020b9f\u3042', 1) == '\\u3042'
     True
     """
     
@@ -194,12 +173,12 @@ def code_points(s):
     >>> list(code_points(s)) == ['h', 'e', 'l', 'l', 'o']
     True
     
-    The number of iteration may differ from the len(s), because some 
+    The number of iteration may differ from the ``len(s)``, because some 
     code points may be represented as a couple of other code points 
     ("surrogate pair") in narrow-build Python.
     
-    >>> s = 'abc\U00020b9f\u3042'
-    >>> list(code_points(s)) == ['a', 'b', 'c', '\U00020b9f', '\u3042']
+    >>> s = 'abc\\U00020b9f\\u3042'
+    >>> list(code_points(s)) == ['a', 'b', 'c', '\\U00020b9f', '\\u3042']
     True
     """
     

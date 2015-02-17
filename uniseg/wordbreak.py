@@ -23,6 +23,7 @@ __all__ = [
     'words',
 ]
 
+
 Other = 'Other'
 CR = 'CR'
 LF = 'LF'
