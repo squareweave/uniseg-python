@@ -69,6 +69,9 @@ or download the archive and::
 Changes
 =======
 
+0.7.0 (2015-02-19)
+  - CHANGE: Quited gathering all submodules's members on the top, uniseg module.
+  - Maintained uniseg.wrap module, and sample scripts work again.
 0.6.4 (2015-02-10)
   - Add ``uniseg-dbpath`` console command, which just print the path of ``ucd.sqlite3``.
   - Include sample scripts under the package's subdirectory.
