@@ -1,6 +1,5 @@
 """Unicode-aware text wrapping """
 
-
 from __future__ import (absolute_import,
                         division,
                         print_function,
@@ -8,9 +7,9 @@ from __future__ import (absolute_import,
 import re
 from unicodedata import east_asian_width
 
-from .codepoint import ord, code_point, code_points
-from .graphemecluster import grapheme_clusters, grapheme_cluster_boundaries
-from .linebreak import line_break_boundaries
+from .codepoint         import ord, code_point, code_points
+from .graphemecluster   import grapheme_clusters, grapheme_cluster_boundaries
+from .linebreak         import line_break_boundaries
 
 
 __all__ = [
@@ -76,12 +75,13 @@ class Wrapper(object):
         """wrap string `s` with given formatter and call appropriate 
         formatter methods
 
-        `s`:
+        `s`
             string to be wrapped.
-        `cur`:
+        `cur`
             starting position of the string in logical length.
-        `offset`:
+        `offset`
             left-side offset of wrapping string in logical length.
+            
             NOTE: This parameter is only used for calculating tab-stopping 
             positions for now.
         """
@@ -132,14 +132,24 @@ class Formatter(object):
     
     """The abstruct base class for formatters used by a ``Wrapper`` object
 
-    This class is implemented only for convinience sake. You don't have to 
+    This class is implemented only for convinience sake.  You don't have to 
     design your own formatter as a subclass of it, while it is not 
     deprecated either.
 
-    All formatter classes should have the methods this class has. They 
+    All formatter classes should have the methods this class has.  They 
     are invoked by a ``Wrapper`` object to determin *logical widths* of 
     texts and to give you a way for handling its behaviour such as rendering.
     """
+
+    @property
+    def wrap_width(self):
+        
+        """Logical width of text wrapping 
+
+        Note that returning ``None`` (which is the default) means *"do not 
+        wrap"* while returning ``0`` means *"wrap as narrowly as possible."*
+        """
+        return None
 
     def reset(self):
         
@@ -149,7 +159,7 @@ class Formatter(object):
     def text_extents(self, s):
         
         """Return a list of logical lengths from start of the string to 
-        each characters in `s` """
+        each of characters in `s` """
         pass
     
     def handle_text(self, text, extents):
