@@ -22,6 +22,7 @@ __all__ = [
     'sentences',
 ]
 
+
 CR = 'CR'
 LF = 'LF'
 Extend = 'Extend'

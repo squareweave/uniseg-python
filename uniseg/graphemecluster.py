@@ -22,6 +22,7 @@ __all__ = [
     'grapheme_clusters',
 ]
 
+
 Other = 0
 CR = 1
 LF = 2

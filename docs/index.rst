@@ -1,9 +1,17 @@
-Table of Contents:
+============
+Module Index
+============
 
 .. toctree::
    :maxdepth: 2
+   :numbered:
 
-   members
+   codepoint
+   graphemecluster
+   wordbreak
+   sentencebreak
+   linebreak
+   wrap
 
 .. include:: ../README.txt
 

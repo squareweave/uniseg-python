@@ -1,5 +1,4 @@
-"""Breakable table and string tokenization
-"""
+"""Breakable table and string tokenization """
 
 
 from __future__ import (absolute_import,

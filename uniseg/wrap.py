@@ -1,21 +1,25 @@
-"""unicode-aware text wrapping """
-
+"""Unicode-aware text wrapping """
 
 from __future__ import (absolute_import,
                         division,
                         print_function,
                         unicode_literals)
-
 import re
 from unicodedata import east_asian_width
 
-from .codepoint import ord, code_point, code_points
-from .graphemecluster import grapheme_clusters, grapheme_cluster_boundaries
-from .linebreak import line_break_boundaries
+from .codepoint         import ord, code_point, code_points
+from .graphemecluster   import grapheme_clusters, grapheme_cluster_boundaries
+from .linebreak         import line_break_boundaries
 
 
-__all__ = ['Wrapper', 'Formatter',
-           'TTFormatter', 'tt_width', 'tt_text_extents', 'tt_wrap']
+__all__ = [
+    'Wrapper',
+    'Formatter',
+    'TTFormatter', 
+    'tt_width',
+    'tt_text_extents',
+    'tt_wrap'
+]
 
 
 ### Wrap
@@ -71,12 +75,13 @@ class Wrapper(object):
         """wrap string `s` with given formatter and call appropriate 
         formatter methods
 
-        `s`:
+        `s`
             string to be wrapped.
-        `cur`:
+        `cur`
             starting position of the string in logical length.
-        `offset`:
+        `offset`
             left-side offset of wrapping string in logical length.
+            
             NOTE: This parameter is only used for calculating tab-stopping 
             positions for now.
         """
@@ -104,7 +109,8 @@ class Wrapper(object):
                 for boundary in iter_boundaries(field):
                     extent = field_extents[boundary-1]
                     w = extent - prev_extent
-                    if cur + w > formatter.wrap_width:
+                    wrap_width = formatter.wrap_width
+                    if wrap_width is not None and cur + w > wrap_width:
                         line = field[breakpoint:prev_boundary]
                         line_extents = _partial_extents(field_extents,
                                                         breakpoint,
@@ -127,14 +133,24 @@ class Formatter(object):
     
     """The abstruct base class for formatters used by a ``Wrapper`` object
 
-    This class is implemented only for convinience sake. You don't have to 
+    This class is implemented only for convinience sake.  You don't have to 
     design your own formatter as a subclass of it, while it is not 
     deprecated either.
 
-    All formatter classes should have the methods this class has. They 
+    All formatter classes should have the methods this class has.  They 
     are invoked by a ``Wrapper`` object to determin *logical widths* of 
     texts and to give you a way for handling its behaviour such as rendering.
     """
+
+    @property
+    def wrap_width(self):
+        
+        """Logical width of text wrapping 
+
+        Note that returning ``None`` (which is the default) means *"do not 
+        wrap"* while returning ``0`` means *"wrap as narrowly as possible."*
+        """
+        return None
 
     def reset(self):
         
@@ -144,7 +160,7 @@ class Formatter(object):
     def text_extents(self, s):
         
         """Return a list of logical lengths from start of the string to 
-        each characters in `s` """
+        each of characters in `s` """
         pass
     
     def handle_text(self, text, extents):
