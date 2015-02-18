@@ -1,21 +1,19 @@
 #!/usr/bin/env python
-"""Text wrapping demo on uniseg + wxPython
-"""
-
+# encoding: utf-8
+"""Text wrapping demo on uniseg + wxPython """
 
 from __future__ import (absolute_import,
                         division,
                         print_function,
                         unicode_literals)
-
 from locale import getpreferredencoding
 
 import wx
 
-import uniseg
+from uniseg.wrap import Wrapper, Formatter
 
 
-default_text = u"""The quick (\u201cbrown\u201d) fox \
+default_text = """The quick (\u201cbrown\u201d) fox \
 can\u2019t jump 32.3 feet, right?
 
 Alice was beginning to get very tired of sitting by her \
@@ -57,16 +55,45 @@ conversation?'
 _preferredencoding = getpreferredencoding()
 
 
-class WindowWrapper(uniseg.TextWrapper):
+class SampleWxFormatter(Formatter):
     
-    def __init__(self, dc):
+    def __init__(self, dc, log_width):
         
         self._dc = dc
+        self._log_width = log_width
+        self._log_cur_x = 0
+        self._log_cur_y = 0
     
-    def list_text_extents(self, s):
+    @property
+    def wrap_width(self):
+
+        return self._log_width
+
+    def reset(self):
+        
+        self._log_cur_x = 0
+        self._log_cur_y = 0
+
+    def text_extents(self, s):
         
         dc = self._dc
         return dc.GetPartialTextExtents(s)
+
+    def handle_text(self, text, extents):
+        
+        if not text or not extents:
+            return
+
+        dc = self._dc
+        dc.DrawText(text, self._log_cur_x, self._log_cur_y)
+        self._log_cur_x += extents[-1]
+
+    def handle_new_line(self):
+        
+        dc = self._dc
+        log_line_height = dc.GetCharHeight()
+        self._log_cur_y += log_line_height
+        self._log_cur_x = 0
 
 
 class App(wx.App):
@@ -153,10 +180,8 @@ class WrapWindow(wx.Window):
     _default_fontsize = 18
     
     def __init__(self, parent, id_,
-                 pos=wx.DefaultPosition,
-                 size=wx.DefaultSize,
-                 style=0,
-                 name=wx.PanelNameStr):
+                 pos=wx.DefaultPosition, size=wx.DefaultSize,
+                 style=0, name=wx.PanelNameStr):
         
         wx.Window.__init__(self, parent, id_, pos, size, style, name)
         
@@ -181,36 +206,28 @@ class WrapWindow(wx.Window):
     
     def SetText(self, value):
         
-        self._text = unicode(value)
+        self._text = value
     
     def OnPaint(self, evt):
         
         dc = wx.AutoBufferedPaintDC(self)
         dc.Clear()
-        dev_width, dev_height = self.GetClientSizeTuple()
-        log_width = dc.DeviceToLogicalXRel(dev_width)
-        log_height = dc.DeviceToLogicalYRel(dev_height)
-        text = self._text
         
         font = self.GetFont()
         dc.SetFont(font)
-        log_line_height = dc.GetCharHeight()
-        wrapper = WindowWrapper(dc)
-        wrapper.wrap_width = log_width
-        x = 0
-        y = 0
-        for para in text.splitlines(True):
-            for line in wrapper.wrap(para):
-                dc.DrawText(line, x, y)
-                y += log_line_height
-                if y > log_height:
-                    break
-            if y > log_height:
-                break
+
+        dev_width, dev_height = self.GetClientSize()
+        log_width   = dc.DeviceToLogicalX(dev_width)
+        log_height  = dc.DeviceToLogicalY(dev_height)
+        
+        formatter = SampleWxFormatter(dc, log_width)
+        wrapper = Wrapper(formatter)
+        wrapper.wrap(self._text)
     
     def OnSize(self, evt):
         
         self.Refresh()
+
 
 def main():
     
