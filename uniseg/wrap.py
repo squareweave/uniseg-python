@@ -109,7 +109,8 @@ class Wrapper(object):
                 for boundary in iter_boundaries(field):
                     extent = field_extents[boundary-1]
                     w = extent - prev_extent
-                    if cur + w > formatter.wrap_width:
+                    wrap_width = formatter.wrap_width
+                    if wrap_width is not None and cur + w > wrap_width:
                         line = field[breakpoint:prev_boundary]
                         line_extents = _partial_extents(field_extents,
                                                         breakpoint,
