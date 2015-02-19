@@ -117,16 +117,14 @@ References
 Related / Similar Projects
 ==========================
 
-`PyICU <https://pypi.python.org/pypi/PyICU>`_ --- Python extension wrapping 
-the ICU C++ API
+`PyICU <https://pypi.python.org/pypi/PyICU>`_ - Python extension wrapping the ICU C++ API
     *PyICU* is a Python extension wrapping International Components for 
     Unicode library (ICU). It also provides text segmentation supports and 
     they just perform richer and faster than those of ours. PyICU is an 
     extension library so it requires ICU dynamic library (binary files) and 
     compiler to build the extention. Our package is written in pure Python; 
     it runs slower but is more portable.
-`pytextseg <https://pypi.python.org/pypi/pytextseg>`_ --- Python module for 
-text segmentation
+`pytextseg <https://pypi.python.org/pypi/pytextseg>`_ - Python module for text segmentation
     *pytextseg* package forcuses very similar goal to ours; it provides 
     Unicode-aware text wrapping features. They designed and uses their 
     original string class (not built-in ``unicode`` / ``str`` classes) for the 
