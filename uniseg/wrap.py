@@ -26,12 +26,10 @@ __all__ = [
 
 class Wrapper(object):
     
-    """text wrapper class """
+    """Text wrapping engine """
     
     def __init__(self, formatter=None, char_wrap=False):
         
-        """init instance """
-
         self._formatter = formatter
         self._char_wrap = char_wrap
         self.reset()
@@ -133,19 +131,19 @@ class Formatter(object):
     
     """The abstruct base class for formatters used by a ``Wrapper`` object
 
-    This class is implemented only for convinience sake.  You don't have to 
-    design your own formatter as a subclass of it, while it is not 
-    deprecated either.
+    This class is implemented only for convinience sake and does nothing 
+    itself.  You don't have to design your own formatter as a subclass of it, 
+    while it is not deprecated either.
 
-    All formatter classes should have the methods this class has.  They 
-    are invoked by a ``Wrapper`` object to determin *logical widths* of 
-    texts and to give you a way for handling its behaviour such as rendering.
+    **Your formatters should have the methods and properties this class has.**  
+    They are invoked by a ``Wrapper`` object to determin *logical widths* of 
+    texts and to give you the ways to handle them, such as to render them.
     """
 
     @property
     def wrap_width(self):
         
-        """Logical width of text wrapping 
+        """The logical width of text wrapping 
 
         Note that returning ``None`` (which is the default) means *"do not 
         wrap"* while returning ``0`` means *"wrap as narrowly as possible."*
@@ -155,7 +153,7 @@ class Formatter(object):
     @property
     def tab_width(self):
         
-        """Logical width of tab forwarding
+        """The logical width of tab forwarding
 
         This property value is used by a ``Wrapper`` object to determin the 
         actual forwarding extents of tabs in each of the positions.
@@ -170,19 +168,22 @@ class Formatter(object):
     def text_extents(self, s):
         
         """Return a list of logical lengths from start of the string to 
-        each of characters in `s` """
+        each of characters in `s`
+        """
         pass
     
     def handle_text(self, text, extents):
         
         """The handler method which is invoked when `text` should be put 
-        on the current position """
+        on the current position with `extents`
+        """
         pass
 
     def handle_new_line(self):
 
         """The handler method which is invoked when the current line is 
-        over and a new line begins """
+        over and a new line begins
+        """
         pass
 
 
