@@ -48,7 +48,7 @@ class Wrapper(object):
         *Changed in version 0.7:* The order of the parameters are changed.
         """
 
-        partial_extents = self.partial_extents
+        partial_extents = self._partial_extents
         if char_wrap:
             iter_boundaries = grapheme_cluster_boundaries
         else:
