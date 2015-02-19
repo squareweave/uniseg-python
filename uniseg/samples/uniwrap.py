@@ -67,8 +67,8 @@ def main():
     char_wrap   = args.char_wrap
     legacy      = args.legacy
     encoding    = args.encoding
-    fin = argopen(args.file, 'r', encoding)
-    fout = argopen(args.output, 'w', encoding)
+    fin         = argopen(args.file, 'r', encoding)
+    fout        = argopen(args.output, 'w', encoding)
     
     if ruler:
         if tab_width:
@@ -81,7 +81,7 @@ def main():
     for para in fin:
         for line in tt_wrap(para, wrap_width, tab_width,
                             ambiguous_as_wide=legacy, char_wrap=char_wrap):
-            print('%r' % line.rstrip('\n'), file=fout)
+            print(line.rstrip('\n'), file=fout)
 
 
 if __name__ == '__main__':
