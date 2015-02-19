@@ -152,6 +152,16 @@ class Formatter(object):
         """
         return None
 
+    @property
+    def tab_width(self):
+        
+        """Logical width of tab forwarding
+
+        This property value is used by a ``Wrapper`` object to determin the 
+        actual forwarding extents of tabs in each of the positions.
+        """
+        return 0
+
     def reset(self):
         
         """Reset all states of the formatter """
