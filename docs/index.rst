@@ -1,17 +1,13 @@
-============
-Module Index
-============
+======
+Topics
+======
 
 .. toctree::
    :maxdepth: 2
    :numbered:
 
-   codepoint
-   graphemecluster
-   wordbreak
-   sentencebreak
-   linebreak
-   wrap
+   modules
+   samples
 
 .. include:: ../README.txt
 
