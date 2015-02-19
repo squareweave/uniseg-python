@@ -1,5 +1,5 @@
 ======
-Topics
+uniseg
 ======
 
 .. toctree::

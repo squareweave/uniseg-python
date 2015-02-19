@@ -1,6 +1,5 @@
-=============
-uniseg-python
-=============
+Introduction
+============
 
 A pure Python module to determine Unicode text segmentations
 
