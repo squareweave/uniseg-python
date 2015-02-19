@@ -10,7 +10,7 @@ from locale import getpreferredencoding
 
 import wx
 
-from uniseg.wrap import Wrapper, Formatter
+from uniseg.wrap import wrap, Formatter
 
 
 default_text = """The quick (\u201cbrown\u201d) fox \
@@ -221,8 +221,7 @@ class WrapWindow(wx.Window):
         log_height  = dc.DeviceToLogicalY(dev_height)
         
         formatter = SampleWxFormatter(dc, log_width)
-        wrapper = Wrapper(formatter)
-        wrapper.wrap(self._text)
+        wrap(formatter, self._text)
     
     def OnSize(self, evt):
         
