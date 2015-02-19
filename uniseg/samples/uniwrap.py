@@ -4,8 +4,10 @@ from __future__ import (absolute_import,
                         division,
                         print_function,
                         unicode_literals)
+import argparse
 import io
 import sys
+from locale import getpreferredencoding
 
 from uniseg.wrap import tt_wrap
 
@@ -24,9 +26,6 @@ def argopen(file, mode, encoding=None, errors=None):
 
 
 def main():
-    
-    import argparse
-    from locale import getpreferredencoding
     
     encoding = getpreferredencoding()
     
