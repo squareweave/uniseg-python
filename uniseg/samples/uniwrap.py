@@ -34,12 +34,6 @@ def main():
     parser.add_argument('-e', '--encoding',
                         default=encoding,
                         help='file encoding (%(default)s)')
-    parser.add_argument('-x', '--expand-tabs',
-                        action='store_true',
-                        help='expand tabs to spaces')
-    parser.add_argument('-j', '--justify',
-                        action='store_true',
-                        help='justify lines')
     parser.add_argument('-r', '--ruler',
                         action='store_true',
                         help='show ruler')
@@ -67,27 +61,27 @@ def main():
                         help='input file')
     args = parser.parse_args()
     
-    wrapper = TTWrapper()
-    wrapper.expand_tabs = args.expand_tabs
-    wrapper.justify = args.justify
-    wrapper.tab_width = tab_width = args.tab_width
-    wrapper.legacy = args.legacy
-    wrapper.wrap_width = wrap_width = args.wrap_width
-    wrapper.char_wrap = args.char_wrap
-    encoding = args.encoding
+    ruler       = args.ruler
+    tab_width   = args.tab_width
+    wrap_width  = args.wrap_width
+    char_wrap   = args.char_wrap
+    legacy      = args.legacy
+    encoding    = args.encoding
     fin = argopen(args.file, 'r', encoding)
     fout = argopen(args.output, 'w', encoding)
-    if args.ruler:
+    
+    if ruler:
         if tab_width:
-            rul = ('+' + '-' * (tab_width - 1)) * (wrap_width // tab_width + 1)
-            ruler = rul[:wrap_width]
+            ruler = ('+'+'-'*(tab_width-1)) * (wrap_width//tab_width+1)
+            ruler = ruler[:wrap_width]
         else:
             ruler = '-' * wrap_width
         print(ruler, file=fout)
     
     for para in fin:
-        for line in wrapper.wrap(para):
-            print(line.rstrip('\n'), file=fout)
+        for line in tt_wrap(para, wrap_width, tab_width,
+                            ambiguous_as_wide=legacy, char_wrap=char_wrap):
+            print('%r' % line.rstrip('\n'), file=fout)
 
 
 if __name__ == '__main__':
