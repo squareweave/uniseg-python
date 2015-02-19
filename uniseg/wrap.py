@@ -262,6 +262,8 @@ class TTFormatter(object):
 
         """Iterate every wrapped line strings
         """
+        if not self._lines[-1]:
+            self._lines.pop()
         return iter(self._lines)
 
 
