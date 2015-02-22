@@ -137,6 +137,8 @@ License
 
 ::
 
+  The MIT License (MIT)
+
   Copyright (c) 2013 Masaaki Shibata <mshibata@emptypage.jp>
 
   Permission is hereby granted, free of charge, to any person obtaining a 
