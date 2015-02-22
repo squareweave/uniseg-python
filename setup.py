@@ -1,12 +1,17 @@
+from ast import literal_eval
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
 
+DIR_SRC = 'uniseg'
+VERSION = literal_eval(open(DIR_SRC+'/version.py').read())
+
+
 setup(
     name = 'uniseg',
-    version = '0.7.0',
+    version = VERSION,
     author = 'Masaaki Shibata',
     author_email = 'mshibata@emptypage.jp',
     url = 'https://bitbucket.org/emptypage/uniseg-python',
