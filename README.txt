@@ -87,7 +87,7 @@ or download the archive and::
 Changes
 =======
 
-0.7.0 (2015-02-XX)
+0.7.0 (2015-02-27)
   - CHANGE: Quited gathering all submodules's members on the top, uniseg 
     module.
   - CHANGE: Reform ``uniseg.wrap`` module and sample scripts.
