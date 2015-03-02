@@ -45,7 +45,10 @@ class Wrapper(object):
         This may be helpful when you don't want the word wrapping feature in 
         your application.
 
-        *Changed in version 0.7:* The order of the parameters are changed.
+        This function returns the total count of wrapped lines.
+
+        - *Changed in version 0.7:* The order of the parameters are changed.
+        - *Changed in version 0.7.1:* It returns the count of lines now.
         """
 
         partial_extents = self._partial_extents
@@ -54,6 +57,7 @@ class Wrapper(object):
         else:
             iter_boundaries = line_break_boundaries
         
+        iline = 0
         for para in s.splitlines(True):
             for field in re.split('(\\t)', para):
                 if field == '\t':
@@ -74,7 +78,7 @@ class Wrapper(object):
                                                        breakpoint,
                                                        prev_boundary)
                         formatter.handle_text(line, line_extents)
-                        formatter.handle_new_line()
+                        formatter.handle_new_line(); iline += 1
                         cur = 0
                         breakpoint = prev_boundary
                     cur += w
@@ -83,8 +87,9 @@ class Wrapper(object):
                 line = field[breakpoint:]
                 line_extents = partial_extents(field_extents, breakpoint)
                 formatter.handle_text(line, line_extents)
-            formatter.handle_new_line()
+            formatter.handle_new_line(); iline += 1
             cur = 0
+        return iline+1
     
     @staticmethod
     def _partial_extents(extents, start, stop=None):
@@ -107,8 +112,10 @@ def wrap(formatter, s, cur=0, offset=0, char_wrap=None):
     :class:`Wrapper` instance
 
     See :meth:`Wrapper.wrap` for further details of the parameters.
+    
+    - *Changed in version 0.7.1:* It returns the count of lines now.
     """
-    __wrapper__.wrap(formatter, s, cur, offset, char_wrap)
+    return __wrapper__.wrap(formatter, s, cur, offset, char_wrap)
 
 
 class Formatter(object):
