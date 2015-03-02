@@ -89,7 +89,7 @@ class Wrapper(object):
                 formatter.handle_text(line, line_extents)
             formatter.handle_new_line(); iline += 1
             cur = 0
-        return iline+1
+        return iline
     
     @staticmethod
     def _partial_extents(extents, start, stop=None):
