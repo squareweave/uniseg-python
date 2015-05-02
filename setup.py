@@ -17,7 +17,7 @@ setup(
     url = 'https://bitbucket.org/emptypage/uniseg-python',
     description\
         = 'A pure Python library to determine Unicode text segmentations',
-    long_description = open('README.txt').read(),
+    long_description = open('README').read(),
     license = 'MIT',
     packages = ['uniseg'],
     package_data = {
