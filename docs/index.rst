@@ -14,7 +14,7 @@ uniseg
 * :ref:`search`
 
 
-.. include:: ../README.txt
+.. include:: ../README
 
 
 License
