@@ -1,1 +1,1 @@
-include Makefile schema.sql tools/*.py
+include LICENSE README Makefile schema.sql tools/*.py
