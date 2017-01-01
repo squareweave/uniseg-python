@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Determine Unicode text segmentations.
+ A Python package to determine Unicode text segmentations.
 
 You can see the full documentation including the package reference on
 http://uniseg-python.readthedocs.io.
