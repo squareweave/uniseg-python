@@ -1,7 +1,7 @@
 Introduction
 ============
 
-A pure Python module to determine Unicode text segmentations.
+Determine Unicode text segmentations.
 
 You can see the full documentation including the package reference on
 http://uniseg-python.readthedocs.io.
@@ -14,9 +14,9 @@ This package provides:
 
 - Functions to get Unicode Character Database (UCD) properties concerned with
   text segmentations.
-- Functions to determin segmentation boundaries of Unicode strings.
+- Functions to determine segmentation boundaries of Unicode strings.
 - Classes that help implement Unicode-aware text wrapping on both console
-  (monospace) and graphical (monospace / propotional) font environments.
+  (monospace) and graphical (monospace / proportional) font environments.
 
 Supporting segmentations are:
 
@@ -36,8 +36,8 @@ Supporting segmentations are:
     Such languages like Thai or Japanese require dictionaries to determine
     appropriate word boundaries. Though the package only provides simple word
     breaking implementation which is based on the scripts and doesn't use any
-    dictionaires, it also provides ways to customize its default behaviours.
-*sentensce break*
+    dictionaries, it also provides ways to customize its default behavior.
+*sentence break*
     Sentence breaks are also common in text processing but they are more
     contextual and less formal. The sentence breaking implementation (which is
     specified in UAX: Unicode Standard Annex) in the package is simple and
@@ -51,7 +51,7 @@ Supporting segmentations are:
 Requirements
 ============
 
-- Python 2.7 / 3.3 / 3.4
+- Python 2.7 / 3.4 / 3.5 / 3.6
 
 
 Download
@@ -83,7 +83,7 @@ Changes
   - Separate LICENSE from README.txt for the packaging-related reason in some
     environments.
 0.7.0 (2015-02-27)
-  - CHANGE: Quited gathering all submodules's members on the top, uniseg
+  - CHANGE: Quitted gathering all submodules's members on the top, uniseg
     module.
   - CHANGE: Reform ``uniseg.wrap`` module and sample scripts.
   - Maintained uniseg.wrap module, and sample scripts work again.
@@ -117,10 +117,10 @@ Related / Similar Projects
     Unicode library (ICU). It also provides text segmentation supports and
     they just perform richer and faster than those of ours. PyICU is an
     extension library so it requires ICU dynamic library (binary files) and
-    compiler to build the extention. Our package is written in pure Python;
+    compiler to build the extension. Our package is written in pure Python;
     it runs slower but is more portable.
 `pytextseg <https://pypi.python.org/pypi/pytextseg>`_ - Python module for text segmentation
-    *pytextseg* package forcuses very similar goal to ours; it provides
+    *pytextseg* package focuses very similar goal to ours; it provides
     Unicode-aware text wrapping features. They designed and uses their
     original string class (not built-in ``unicode`` / ``str`` classes) for the
     purpose. We use strings as just ordinary built-in ``unicode`` / ``str``
