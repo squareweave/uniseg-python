@@ -18,10 +18,10 @@ preferred_encoding = locale.getpreferredencoding()
 
 
 def parse_breaking_test_pattern(pattern):
-    
+
     BREAK = '\u00f7'
     DONT_BREAK = '\u00d7'
-    
+
     codepoint_list = []
     breakpoint_list = []
     codepoint_count = 0
@@ -41,38 +41,34 @@ def parse_breaking_test_pattern(pattern):
 
 
 def implement_break_tests(func_boundaries, test_iter, skips=None):
-    
+
     if skips is None:
         skips = []
-    
+
     def create_test_func(name, string, expect, comment):
-        
+
         def _test(self):
             result = list(func_boundaries(string))
             msg = '%r expects %r but %r' % (string, expect, result)
             self.assertEqual(expect, result, msg)
-        
+
         _test.__name__ = str('test_%s' % name)
         _test.__doc__ = comment
-        
         return _test
-    
+
     def decolator(cls):
-        
         for name, pattern, comment in test_iter:
             string, expect = parse_breaking_test_pattern(pattern)
             f = create_test_func(name, string, expect, comment)
             if (string, expect) in skips:
                 f = unittest.skip('test may be wrong.')(f)
             setattr(cls, f.__name__, wraps(f)(lambda *a, **k: f(*a, **k)))
-        
         return cls
-    
+
     return decolator
 
 
 if __name__ == '__main__':
-    
     loader = unittest.defaultTestLoader
     suite = loader.discover('.', '*test.py')
     runner = unittest.TextTestRunner()

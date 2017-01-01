@@ -1,11 +1,7 @@
-#!/usr/bin/env python
-
-
 from __future__ import (absolute_import,
                         division,
                         print_function,
                         unicode_literals)
-
 import re
 
 
@@ -13,14 +9,14 @@ rx_csv_special_characters = re.compile(r'[,"\n]')
 
 
 def split_record(line, separator=';'):
-    
+
     """Split `line` to a list of fields and a comment
-    
+
     >>> split_record('0000..0009 ; XXX # some value')
     (['0000..0009', 'XXX'], 'some value')
-    
+
     """
-    
+
     try:
         i = line.index('#')
     except ValueError:
@@ -29,24 +25,24 @@ def split_record(line, separator=';'):
     else:
         record_line = line[:i]
         comment = line[i+1:]
-    
+
     fields = [x.strip() for x in record_line.split(separator)]
     comment = comment.strip()
-    
+
     return fields, comment
 
 
 def codepoint_range(data, separator='..'):
-    
+
     """Return the list of code point integers described in `data`
-    
+
     >>> list(codepoint_range('000D'))
     [13]
     >>> list(codepoint_range('0000..0009'))
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    
+
     """
-    
+
     if separator in data:
         start, end = data.split(separator)
     else:
@@ -57,9 +53,9 @@ def codepoint_range(data, separator='..'):
 
 
 def csv_escape(value):
-    
+
     '''Return escaped string suitable as a CSV field
-    
+
     >>> csv_escape(1)
     '1'
     >>> csv_escape('hello')
@@ -68,21 +64,21 @@ def csv_escape(value):
     '","'
     >>> csv_escape('"hi"')
     '"""hi"""'
-    
+
     '''
-    
+
     s = str(value)
     if rx_csv_special_characters.search(s):
         s = '"%s"' % s.replace('"', '""')
-    
+
     return s
 
 
 def main():
-    
+
     import argparse
     from sys import stdin, stdout, stderr
-    
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--testmod',
                         action='store_true',
@@ -95,12 +91,12 @@ def main():
                         type=argparse.FileType('r'),
                         default=stdin)
     args = parser.parse_args()
-    
+
     if args.testmod:
         import doctest
         doctest.testmod()
         exit()
-    
+
     fin = args.file
     fout = args.output
     for line in fin:
