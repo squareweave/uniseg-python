@@ -46,7 +46,7 @@ def find_dbpath():
 
 _dbpath = find_dbpath()
 if _dbpath:
-    _conn = sqlite3.connect(_dbpath)
+    _conn = sqlite3.connect(_dbpath, check_same_thread=False)
 else:
     _conn = None
 
