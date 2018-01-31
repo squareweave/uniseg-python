@@ -8,6 +8,7 @@ from __future__ import (absolute_import,
                         unicode_literals)
 
 import locale
+import sys
 import unittest
 from functools import wraps
 
@@ -72,4 +73,5 @@ if __name__ == '__main__':
     loader = unittest.defaultTestLoader
     suite = loader.discover('.', '*test.py')
     runner = unittest.TextTestRunner()
-    runner.run(suite)
+    result = runner.run(suite)
+    sys.exit(not result.wasSuccessful())
